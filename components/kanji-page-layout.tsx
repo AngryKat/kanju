@@ -6,20 +6,29 @@ import {
   Pressable,
   Keyboard,
 } from "react-native";
+import uuid from "react-native-uuid";
 
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Card } from "@/components/card";
 import { ReadingInput } from "@/components/reading-input";
 import { NotesInput } from "@/components/notes-input";
-import { KanjiInput, validateKanji } from "@/components/kanji-input";
+import {
+  KanjiInput,
+  regexKanji,
+  validateKanji,
+} from "@/components/kanji-input";
 import { addKanji, getKanjiById } from "@/utils/kanji-async-storage";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import { DictionaryInput } from "./dictionary-input";
+import { DictionaryRead } from "./dictionary-read";
+import type { DictionaryEntry } from "@/utils/types";
 
 interface FormData {
   kanji: string;
   on: string[];
   kun: string[];
   notes: string;
+  dictionary: DictionaryEntry[];
 }
 
 const DEFAULT_FORM_DATA: FormData = {
@@ -27,29 +36,33 @@ const DEFAULT_FORM_DATA: FormData = {
   on: [],
   kun: [],
   notes: "",
+  dictionary: [],
 };
 
-type Mode = "read" | "create" | "edit"
+type Mode = "read" | "create" | "edit";
 
 const getModeTitle = (mode: Mode, title: string) => {
   if (mode === "read") return title;
   return mode === "create" ? `Add kanji` : `Edit ${title}`;
 };
 
-export function KanjiPageLayout({
-  mode,
-}: {
-  mode: Mode;
-}) {
+export function KanjiPageLayout({ mode }: { mode: Mode }) {
   const navigation = useNavigation();
   const { kanjiId } = useLocalSearchParams();
-  const [{ kanji, kun, on, notes }, setFormData] = useState<FormData>(DEFAULT_FORM_DATA);
-  const disabledButton =  kanji === "" ||
-  !validateKanji(kanji) ||
-  (kun.length === 0 && on.length === 0);
+  const [{ kanji, kun, on, notes, dictionary }, setFormData] =
+    useState<FormData>(DEFAULT_FORM_DATA);
+  const showDictionaryField =
+    mode !== "read" &&
+    (regexKanji.test(kanji) || (regexKanji.test(kanji) && kanji.length === 1));
+  const disabledButton =
+    kanji === "" ||
+    !validateKanji(kanji) ||
+    (kun.length === 0 && on.length === 0);
   const readOnly = mode === "read";
   const handleFieldInput =
-    (fieldName: keyof FormData) => (value: string | string[]) => {
+    (fieldName: keyof FormData) =>
+    (value: string | string[] | DictionaryEntry[]) => {
+      console.log("handleFieldInput");
       setFormData((prev) => ({ ...prev, [fieldName]: value }));
     };
 
@@ -65,6 +78,7 @@ export function KanjiPageLayout({
         kun,
       },
       notes,
+      dictionary,
     };
     await addKanji(newKanji);
     router.navigate("/");
@@ -74,13 +88,14 @@ export function KanjiPageLayout({
     if (mode !== "create" && kanjiId) {
       const getKanji = async () => {
         const kanjiById = await getKanjiById(kanjiId as string);
-        const { kanji, readings, notes } = kanjiById;
+        const { kanji, readings, notes, dictionary } = kanjiById;
         const form = {
           kanji,
           notes,
+          dictionary,
           ...readings,
         };
-        setFormData(form);
+        setFormData(form as FormData);
       };
       getKanji();
     }
@@ -119,39 +134,89 @@ export function KanjiPageLayout({
                 gap: 14,
               }}
             >
-              <Card>
-                <ReadingInput
-                  title="KUN"
-                  value={kun}
-                  onInputChange={handleFieldInput("kun")}
-                  readOnly={readOnly}
-                />
-              </Card>
-              <Card>
-                <ReadingInput
-                  value={on}
-                  title="ON"
-                  onInputChange={handleFieldInput("on")}
-                  readOnly={readOnly}
-                />
-              </Card>
+              {((kun.length > 0 && mode === "read") || mode !== "read") && (
+                <Card>
+                  <ReadingInput
+                    title="KUN"
+                    value={kun}
+                    onInputChange={handleFieldInput("kun")}
+                    readOnly={readOnly}
+                  />
+                </Card>
+              )}
+              {((on.length > 0 && mode === "read") || mode !== "read") && (
+                <Card>
+                  <ReadingInput
+                    value={on}
+                    title="ON"
+                    onInputChange={handleFieldInput("on")}
+                    readOnly={readOnly}
+                  />
+                </Card>
+              )}
             </View>
-            {kanji && <View>
-              <Text>Dictionary</Text>
-              <Text>Add words where this kanji is used</Text>
-            </View>}
-            <NotesInput
-              onInputChange={handleFieldInput("notes")}
-              value={notes}
-            />
+            {showDictionaryField && (
+              <>
+                <Text
+                  style={{
+                    color: "whitesmoke",
+                    textAlign: "center",
+                    fontSize: 20,
+                    fontWeight: 600,
+                    marginTop: 24,
+                  }}
+                >
+                  Dictionary
+                </Text>
+                <Text
+                  style={{
+                    color: "#404040",
+                    textAlign: "center",
+                    fontSize: 16,
+                    fontWeight: 500,
+                    marginBottom: 18,
+                  }}
+                >
+                  Add words where this kanji is used
+                </Text>
+                <DictionaryInput
+                  kanji={kanji}
+                  data={dictionary}
+                  onUpdate={handleFieldInput("dictionary")}
+                />
+              </>
+            )}
+            {mode === "read" && (
+              <>
+                <Text
+                  style={{
+                    color: "whitesmoke",
+                    textAlign: "center",
+                    fontSize: 20,
+                    fontWeight: 600,
+                    marginTop: 24,
+                    marginBottom: 12,
+                  }}
+                >
+                  Dictionary
+                </Text>
+                <DictionaryRead data={dictionary} />
+              </>
+            )}
+            {((notes && mode === "read") || mode !== "read") && (
+              <NotesInput
+                onInputChange={handleFieldInput("notes")}
+                value={notes}
+                readOnly={readOnly}
+              />
+            )}
             <View
               style={{
                 backgroundColor: "white",
                 display: "flex",
                 flexDirection: "row",
               }}
-            >
-            </View>
+            ></View>
           </View>
         </Pressable>
 
