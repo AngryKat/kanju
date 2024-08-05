@@ -10,7 +10,12 @@ import {
 
 import { KanjiCard } from "@/components/kanji-card";
 import { AddCard } from "@/components/add-card";
-import React, { ReactNode, useCallback, useLayoutEffect, useState } from "react";
+import React, {
+  ReactNode,
+  useCallback,
+  useLayoutEffect,
+  useState,
+} from "react";
 import { getKanjis, removeKanjiById } from "@/utils/kanji-async-storage";
 import { useFocusEffect, useNavigation } from "expo-router";
 import type { Kanji } from "@/utils/types";
@@ -27,7 +32,7 @@ const renderListItem = (
 };
 
 export function KanjiListScreen() {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const [kanjiList, setKanjiList] = useState<Kanji[]>([]);
   const getAllKanjis = useCallback(async () => {
     setTimeout(async () => {
@@ -44,13 +49,15 @@ export function KanjiListScreen() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => <Text style={{ color: 'white' }}>{kanjiList.length}</Text>
-    })
-  }, [navigation, kanjiList])
+      headerRight: () => (
+        <Text style={{ color: "white" }}>{kanjiList.length}</Text>
+      ),
+    });
+  }, [navigation, kanjiList]);
   const handleRemove = async (kanjiId: string) => {
     await removeKanjiById(kanjiId);
     getAllKanjis();
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
   };
 
   return (
@@ -60,15 +67,12 @@ export function KanjiListScreen() {
           gap: 8,
           flexGrow: 1,
           padding: 14,
-          flexDirection : "row", flexWrap : "wrap"
+          flexDirection: "row",
+          flexWrap: "wrap",
         }}
         data={[...kanjiList, <AddCard key="add-card" />]}
         renderItem={({ item }) => renderListItem(item, handleRemove)}
-        keyExtractor={(item) =>
-          React.isValidElement(item) && item.type === "AddCard"
-            ? "add-card"
-            : (item as Kanji).id
-        }
+        keyExtractor={(item) => (item as Kanji).id ?? "add-card"}
       />
     </SafeAreaView>
   );
