@@ -6,7 +6,7 @@ import {
 import { Card } from "./card";
 import { Extrapolation, interpolate } from "react-native-reanimated";
 
-const regexKanji = /[\u4E00-\u9FAF]$/g;
+export const regexKanji = /[\u4E00-\u9FAF]$/g;
 
 export const validateKanji = (kanji: string) => {
   if (kanji.length === 0) return true;
@@ -39,7 +39,7 @@ const renderInput = ({
       marginBottom: 8,
       color: "whitesmoke",
       borderBottomWidth: 1,
-      borderBottomColor: error ? "red" : "darkgray",
+      borderBottomColor: error ? "red" : "#404040",
     }}
     placeholder="心"
     onChangeText={onChangeText}

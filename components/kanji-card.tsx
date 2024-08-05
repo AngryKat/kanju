@@ -1,7 +1,7 @@
 import { ActionSheetIOS, Text, View } from "react-native";
 import { FlipCard } from "./flip-card";
-import { type Kanji } from "@/utils/kanji-async-storage";
 import { router } from "expo-router";
+import type { Kanji } from "@/utils/types";
 
 interface Readings {
   kun: string[];

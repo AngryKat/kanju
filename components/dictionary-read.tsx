@@ -16,7 +16,7 @@ export const DictionaryRead: React.FC<DictionaryReadProps> = ({ data }) => {
       {withMeaning.length !== 0 &&
         withMeaning.map((entry) => (
           <Card key={entry.id} style={{ marginBottom: 10 }}>
-            <View style={{ display: "flex", flexDirection: "row" }}>
+            <View style={{ flexDirection: "row" }}>
               <View style={{ marginRight: 8 }}>
                 {entry.reading && (
                   <TextInput
@@ -41,6 +41,11 @@ export const DictionaryRead: React.FC<DictionaryReadProps> = ({ data }) => {
                   readOnly
                 />
               </View>
+              <View style={{
+                borderLeftWidth: 1,
+                borderLeftColor: '#505050',
+                marginRight: 8
+              }} />
               <View style={{ flex: 1 }}>
                 <TextInput
                   style={{

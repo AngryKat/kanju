@@ -15,7 +15,7 @@ export function IonIconButton({
   onPress,
   style,
   iconSize = 15,
-  color = "whitesmoke",
+  color = "gray",
 }: Props) {
   return (
     <Pressable onPress={onPress} style={style}>

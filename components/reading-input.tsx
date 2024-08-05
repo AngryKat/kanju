@@ -21,7 +21,7 @@ const renderInput = ({
     value={value.join("、")}
     style={{
       flex: 1,
-      borderBottomColor: error ? "red" : "darkgray",
+      borderBottomColor: error ? "red" : "#404040",
       borderBottomWidth: 1,
       color: "whitesmoke",
     }}

@@ -5,19 +5,16 @@ import {
   SafeAreaView,
   LayoutAnimation,
   FlatList,
+  Text,
 } from "react-native";
 
 import { KanjiCard } from "@/components/kanji-card";
 import { AddCard } from "@/components/add-card";
-import React, { ReactNode, useCallback, useEffect, useState } from "react";
-import {
-  addKanji,
-  getKanjis,
-  removeKanjiById,
-  type Kanji,
-} from "@/utils/kanji-async-storage";
-import { useFocusEffect } from "expo-router";
-import { RefreshControl } from "react-native-gesture-handler";
+import React, { ReactNode, useCallback, useLayoutEffect, useState } from "react";
+import { getKanjis, removeKanjiById } from "@/utils/kanji-async-storage";
+import { useFocusEffect, useNavigation } from "expo-router";
+import type { Kanji } from "@/utils/types";
+import Animated, { LinearTransition } from "react-native-reanimated";
 
 const renderListItem = (
   item: Kanji | ReactNode,
@@ -30,14 +27,12 @@ const renderListItem = (
 };
 
 export function KanjiListScreen() {
-  const [refreshing, setRefreshing] = useState(false);
+  const navigation = useNavigation()
   const [kanjiList, setKanjiList] = useState<Kanji[]>([]);
   const getAllKanjis = useCallback(async () => {
-    setRefreshing(true);
     setTimeout(async () => {
       const data = await getKanjis();
       setKanjiList(Object.values(data));
-      setRefreshing(false);
     }, 500);
   }, []);
 
@@ -47,41 +42,34 @@ export function KanjiListScreen() {
     }, [getAllKanjis])
   );
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => <Text style={{ color: 'white' }}>{kanjiList.length}</Text>
+    })
+  }, [navigation, kanjiList])
   const handleRemove = async (kanjiId: string) => {
     await removeKanjiById(kanjiId);
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
     getAllKanjis();
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
   };
-
-  // const wrapAddCard = (index?: number) => if length is not %3 and index is last, show card
 
   return (
     <SafeAreaView>
-      <View
-        style={{
-          padding: 14,
+      <Animated.FlatList
+        contentContainerStyle={{
           gap: 8,
-          height: '100%'
+          flexGrow: 1,
+          padding: 14,
+          flexDirection : "row", flexWrap : "wrap"
         }}
-      >
-        <FlatList
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={getAllKanjis} />
-          }
-          numColumns={3}
-          contentContainerStyle={{
-            gap: 8,
-          }}
-          columnWrapperStyle={{ gap: 8 }}
-          data={[...kanjiList, <AddCard key="add-card" />]}
-          renderItem={({ item }) => renderListItem(item, handleRemove)}
-          keyExtractor={(item) =>
-            React.isValidElement(item) && item.type === "AddCard"
-              ? "add-card"
-              : (item as Kanji).id
-          }
-        />
-      </View>
+        data={[...kanjiList, <AddCard key="add-card" />]}
+        renderItem={({ item }) => renderListItem(item, handleRemove)}
+        keyExtractor={(item) =>
+          React.isValidElement(item) && item.type === "AddCard"
+            ? "add-card"
+            : (item as Kanji).id
+        }
+      />
     </SafeAreaView>
   );
 }
