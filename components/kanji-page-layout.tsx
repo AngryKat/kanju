@@ -62,7 +62,6 @@ export function KanjiPageLayout({ mode }: { mode: Mode }) {
   const handleFieldInput =
     (fieldName: keyof FormData) =>
     (value: string | string[] | DictionaryEntry[]) => {
-      console.log("handleFieldInput");
       setFormData((prev) => ({ ...prev, [fieldName]: value }));
     };
 
@@ -200,7 +199,7 @@ export function KanjiPageLayout({ mode }: { mode: Mode }) {
                 >
                   Dictionary
                 </Text>
-                <DictionaryRead data={dictionary} />
+                <DictionaryRead data={dictionary} kanji={kanji} />
               </>
             )}
             {((notes && mode === "read") || mode !== "read") && (
