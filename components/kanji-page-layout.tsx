@@ -5,8 +5,8 @@ import {
   Text,
   Pressable,
   Keyboard,
+  Button,
 } from "react-native";
-import uuid from "react-native-uuid";
 
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Card } from "@/components/card";
@@ -103,6 +103,12 @@ export function KanjiPageLayout({ mode }: { mode: Mode }) {
   useLayoutEffect(() => {
     navigation.setOptions({
       title: getModeTitle(mode, kanji),
+      headerRight: () => (
+        <Button
+          onPress={() => router.replace(`/${kanji}/edit`)}
+          title="Edit"
+        />
+      ),
     });
   }, [kanji, mode]);
 
