@@ -20,6 +20,7 @@ import { getKanjis, removeKanjiById } from "@/utils/kanji-async-storage";
 import { useFocusEffect, useNavigation } from "expo-router";
 import type { Kanji } from "@/utils/types";
 import Animated, { LinearTransition } from "react-native-reanimated";
+import ContextMenu from "react-native-context-menu-view";
 
 const renderListItem = (
   item: Kanji | ReactNode,
@@ -28,7 +29,18 @@ const renderListItem = (
   if (React.isValidElement(item) && item.key === "add-card") {
     return item;
   }
-  return <KanjiCard kanji={item as Kanji} onRemove={onRemove} />;
+  return (
+    <ContextMenu
+      actions={[{ title: "Title 1" }, { title: "Title 2" }]}
+      onPress={(e) => {
+        console.warn(
+          `Pressed ${e.nativeEvent.name} at index ${e.nativeEvent.index}`
+        );
+      }}
+    >
+      <KanjiCard kanji={item as Kanji} onRemove={onRemove} />
+    </ContextMenu>
+  );
 };
 
 export function KanjiListScreen() {
