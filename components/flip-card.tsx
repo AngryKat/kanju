@@ -11,11 +11,9 @@ import Animated, {
 export function FlipCard({
   cardFront,
   cardBack,
-  onLongPress,
 }: {
   cardFront: ReactNode;
   cardBack: ReactNode;
-  onLongPress: () => void,
 }) {
   const isFlipped = useSharedValue(false);
 
@@ -41,7 +39,7 @@ export function FlipCard({
     <Pressable
       delayLongPress={500}
       onPress={() => (isFlipped.value = !isFlipped.value)}
-      onLongPress={onLongPress}
+      // onLongPress={onLongPress}
     >
       <Animated.View
         style={[

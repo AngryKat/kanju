@@ -17,10 +17,11 @@ import React, {
   useState,
 } from "react";
 import { getKanjis, removeKanjiById } from "@/utils/kanji-async-storage";
-import { useFocusEffect, useNavigation } from "expo-router";
+import { router, useFocusEffect, useNavigation } from "expo-router";
 import type { Kanji } from "@/utils/types";
-import Animated, { LinearTransition } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import ContextMenu from "react-native-context-menu-view";
+import { KanjiPageMinimizedPreview } from "@/components/kanji-page-minimized-preview";
 
 const renderListItem = (
   item: Kanji | ReactNode,
@@ -31,14 +32,30 @@ const renderListItem = (
   }
   return (
     <ContextMenu
-      actions={[{ title: "Title 1" }, { title: "Title 2" }]}
+      actions={[
+        { title: "View", systemIcon: "eye" },
+        { title: "Edit", systemIcon: "square.and.pencil" },
+        { title: "Remove", destructive: true },
+      ]}
+      preview={<KanjiPageMinimizedPreview kanji={item as Kanji} />}
+      onPreviewPress={() => router.navigate(`/${(item as Kanji).id}`)}
       onPress={(e) => {
-        console.warn(
-          `Pressed ${e.nativeEvent.name} at index ${e.nativeEvent.index}`
-        );
+        switch (e.nativeEvent.index) {
+          case 0:
+            router.navigate(`/${(item as Kanji).id}`);
+            break;
+          case 1:
+            router.navigate(`/${(item as Kanji).id}/edit`);
+            break;
+          case 2:
+            onRemove((item as Kanji).id);
+            break;
+          default:
+            console.warn("No action provided for index ", e.nativeEvent.index);
+        }
       }}
     >
-      <KanjiCard kanji={item as Kanji} onRemove={onRemove} />
+      <KanjiCard kanji={item as Kanji} />
     </ContextMenu>
   );
 };
@@ -73,7 +90,11 @@ export function KanjiListScreen() {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView
+      style={{
+        flex: 1,
+      }}
+    >
       <Animated.FlatList
         contentContainerStyle={{
           gap: 8,
