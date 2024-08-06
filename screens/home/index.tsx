@@ -1,11 +1,10 @@
 import {
   StyleSheet,
   View,
-  ScrollView,
   SafeAreaView,
   LayoutAnimation,
-  FlatList,
   Text,
+  Button,
 } from "react-native";
 
 import { KanjiCard } from "@/components/kanji-card";
@@ -17,9 +16,9 @@ import React, {
   useState,
 } from "react";
 import { getKanjis, removeKanjiById } from "@/utils/kanji-async-storage";
-import { useFocusEffect, useNavigation } from "expo-router";
+import { router, useFocusEffect, useNavigation } from "expo-router";
 import type { Kanji } from "@/utils/types";
-import Animated, { LinearTransition } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 
 const renderListItem = (
   item: Kanji | ReactNode,
@@ -50,7 +49,10 @@ export function KanjiListScreen() {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Text style={{ color: "white" }}>{kanjiList.length}</Text>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text style={{ color: "white" }}>{kanjiList.length}</Text>
+          <Button title="+1" onPress={() => router.push("/add-kanji")} />
+        </View>
       ),
     });
   }, [navigation, kanjiList]);

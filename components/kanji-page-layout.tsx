@@ -103,12 +103,14 @@ export function KanjiPageLayout({ mode }: { mode: Mode }) {
   useLayoutEffect(() => {
     navigation.setOptions({
       title: getModeTitle(mode, kanji),
-      headerRight: () => (
-        <Button
-          onPress={() => router.replace(`/${kanji}/edit`)}
-          title="Edit"
-        />
-      ),
+      ...(mode === "read" && {
+        headerRight: () => (
+          <Button
+            onPress={() => router.replace(`/${kanji}/edit`)}
+            title="Edit"
+          />
+        ),
+      }),
     });
   }, [kanji, mode]);
 
