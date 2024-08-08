@@ -12,6 +12,7 @@ import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { initKanjis } from "@/utils/kanji-async-storage";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomNavbar } from "@/components/bottom-navbar";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -44,15 +45,21 @@ export default function RootLayout() {
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen
-            name="add-kanji"
-            options={{
-              title: "Add new kanji",
-            }}
-          />
-          <Stack.Screen
             name="index"
             options={{
               title: "Kanji",
+            }}
+          />
+            <Stack.Screen
+              name="add-kanji"
+              options={{
+                title: "Add new kanji",
+              }}
+            />
+          <Stack.Screen
+            name="dictionary"
+            options={{
+              title: "Dictionary",
             }}
           />
           <Stack.Screen
@@ -69,6 +76,7 @@ export default function RootLayout() {
           />
           <Stack.Screen name="+not-found" />
         </Stack>
+        <BottomNavbar />
       </ThemeProvider>
     </GestureHandlerRootView>
   );
