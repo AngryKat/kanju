@@ -34,10 +34,12 @@ export function KanjiListScreen() {
   const navigation = useNavigation();
   const [kanjiList, setKanjiList] = useState<Kanji[]>([]);
   const getAllKanjis = useCallback(async () => {
-    setTimeout(async () => {
+    try {
       const data = await getKanjis();
       setKanjiList(Object.values(data));
-    }, 500);
+    } catch (e) {
+      console.error(e);
+    }
   }, []);
 
   useFocusEffect(
