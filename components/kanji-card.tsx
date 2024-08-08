@@ -1,4 +1,4 @@
-import { ActionSheetIOS, Text, View } from "react-native";
+import { ActionSheetIOS, StyleSheet, Text, View } from "react-native";
 import { FlipCard } from "./flip-card";
 import { router } from "expo-router";
 import type { Kanji } from "@/utils/types";
@@ -12,30 +12,16 @@ const renderCardBack = (readings: Readings) => {
   const { on, kun } = readings;
   return (
     <View style={{ display: "flex", justifyContent: "space-evenly", flex: 1 }}>
-      <Text style={{ color: "white", fontWeight: 600, fontSize: 14 }}>
-        KUN:{" "}
-        <Text
-          style={{
-            color: "whitesmoke",
-            fontWeight: 400,
-            fontSize: 12,
-          }}
-        >
-          {kun.join(", ")}
+      {kun.length !== 0 && (
+        <Text style={styles.readingNameText}>
+          KUN: <Text style={styles.readingText}>{kun.join(", ")}</Text>
         </Text>
-      </Text>
-      <Text style={{ color: "white", fontWeight: 600, fontSize: 14 }}>
-        ON:{" "}
-        <Text
-          style={{
-            color: "whitesmoke",
-            fontWeight: 400,
-            fontSize: 12,
-          }}
-        >
-          {on.join(", ")}
+      )}
+      {on.length !== 0 && (
+        <Text style={styles.readingNameText}>
+          ON: <Text style={styles.readingText}>{on.join(", ")}</Text>
         </Text>
-      </Text>
+      )}
     </View>
   );
 };
@@ -103,3 +89,12 @@ export function KanjiCard({
     />
   );
 }
+
+const styles = StyleSheet.create({
+  readingNameText: { color: "#808080", fontWeight: 600, fontSize: 10 },
+  readingText: {
+    color: "whitesmoke",
+    fontWeight: 400,
+    fontSize: 16,
+  },
+});
