@@ -1,14 +1,16 @@
 import { DictionaryEntryRead } from "@/components/dictionary-entry-read";
+import { useSearchBar } from "@/hooks/use-search-bar";
 import { getDictionaryEntries } from "@/utils/kanji-async-storage";
 import { DictionaryEntry } from "@/utils/types";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { FlatList } from "react-native";
+import { FlatList, SafeAreaView } from "react-native";
 
 export default function DictionaryPage() {
   const [dictionaryEntries, setDictionaryEntries] = useState<DictionaryEntry[]>(
     []
   );
+  const searchedEntries = useSearchBar(dictionaryEntries, ["word", "reading", "meaning"]);
   const getAllDictionaryEntries = useCallback(async () => {
     try {
       const data = await getDictionaryEntries();
@@ -25,15 +27,17 @@ export default function DictionaryPage() {
   );
 
   return (
-    <FlatList
-      contentContainerStyle={{
-        paddingVertical: 16,
-        paddingHorizontal: 10
-      }}
-      data={dictionaryEntries}
-      renderItem={({ item }) => (
-        <DictionaryEntryRead key={item.id} entry={item} />
-      )}
-    />
+    <SafeAreaView>
+      <FlatList
+        contentContainerStyle={{
+          paddingVertical: 16,
+          paddingHorizontal: 10,
+        }}
+        data={searchedEntries}
+        renderItem={({ item }) => (
+          <DictionaryEntryRead key={item.id} entry={item} />
+        )}
+      />
+    </SafeAreaView>
   );
 }
