@@ -3,10 +3,18 @@ import type { Settings } from "./types";
 
 let settings: Settings;
 
+const DEFAULT_SETTINGS: Settings = {
+  autoDictionaryEntryAdd: {
+    title: 'Auto dictionary entry add',
+    value: undefined
+  }
+}
+
 export async function initSettings() {
   try {
     const storage = await AsyncStorage.getItem("settings");
-    settings = JSON.parse(storage ?? "{}");
+    settings = JSON.parse(storage ?? '{}');
+    if (Object.keys(settings).length === 0) settings = DEFAULT_SETTINGS
   } catch (e) {
     console.error("Could not init settings. ", e);
   }

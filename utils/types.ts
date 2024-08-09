@@ -13,7 +13,7 @@ export interface Kanji {
     on: string[];
   };
   notes: string;
-  dictionary: DictionaryEntry[]
+  dictionary: DictionaryEntry[];
 }
 
 export interface Setting<T> {
@@ -22,5 +22,5 @@ export interface Setting<T> {
 }
 
 export interface Settings {
-  autoDictionaryEntryAdd: Setting<boolean>
+  autoDictionaryEntryAdd: Setting<boolean | undefined>;
 }

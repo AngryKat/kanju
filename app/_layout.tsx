@@ -36,7 +36,7 @@ export default function RootLayout() {
       await initSettings();
     };
     init();
-  }, [initKanjis]);
+  }, [initKanjis, initSettings]);
 
   if (!loaded) {
     return null;
