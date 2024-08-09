@@ -56,7 +56,7 @@ const autoAdd = (kanji: Kanji) => {
       );
     const kanjisFromStorage = (
       await Promise.all(kanjis.map(async (kan) => await getKanjiById(kan)))
-    ).filter((kan) => kan.dictionary.every(({ word }) => word !== entry.word));
+    ).filter((kan) => kan?.dictionary.every(({ word }) => word !== entry.word));
     if (kanjisFromStorage.length === 0) {
       router.navigate("/");
       return;
