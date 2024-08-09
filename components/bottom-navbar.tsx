@@ -30,7 +30,6 @@ const Tab = ({
   icon?: ReactNode;
   title: string;
 }) => {
-  const nav = useNavigation();
   const segments = useSegments();
   const [isActive, setIsActive] = useState(false);
   const pathname = usePathname();
@@ -50,7 +49,7 @@ const Tab = ({
     <Pressable onPress={handlePress}>
       <Text
         style={{
-          color: isActive ? "#eb9234" : "whitesmoke",
+          color: isActive ? "#eb9234" : "#cecece",
           textAlign: "center",
         }}
       >
@@ -85,6 +84,11 @@ export function BottomNavbar() {
           href="dictionary"
           icon={<Text style={{ fontSize: 24 }}>辞書</Text>}
           title="Dictionary"
+        />
+        <Tab
+          href="settings"
+          icon={<Text style={{ fontSize: 24 }}>辞書</Text>}
+          title="Settings"
         />
       </View>
     </SafeAreaView>
