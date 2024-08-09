@@ -44,7 +44,7 @@ export default function RootLayout() {
     <GestureHandlerRootView>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack>
-          <Stack.Screen
+          {/* <Stack.Screen
             name="index"
             options={{
               title: "Kanji",
@@ -67,16 +67,16 @@ export default function RootLayout() {
             options={{
               title: "",
             }}
-          />
+          /> */}
           <Stack.Screen
-            name="[kanjiId]/edit"
+            name="(tabs)"
             options={{
               title: "",
             }}
           />
           <Stack.Screen name="+not-found" />
         </Stack>
-        <BottomNavbar />
+        {/* <BottomNavbar /> */}
       </ThemeProvider>
     </GestureHandlerRootView>
   );
