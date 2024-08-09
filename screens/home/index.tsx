@@ -19,6 +19,7 @@ import { getKanjis, removeKanjiById } from "@/utils/kanji-async-storage";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import type { Kanji } from "@/utils/types";
 import Animated from "react-native-reanimated";
+import { useSearchBar } from "@/hooks/use-search-bar";
 
 const renderListItem = (
   item: Kanji | ReactNode,
@@ -33,6 +34,7 @@ const renderListItem = (
 export function KanjiListScreen() {
   const navigation = useNavigation();
   const [kanjiList, setKanjiList] = useState<Kanji[]>([]);
+  const searchedKanjis = useSearchBar(kanjiList, ["kanji", "readings.kun", "readings.on"])
   const getAllKanjis = useCallback(async () => {
     try {
       const data = await getKanjis();
@@ -74,7 +76,7 @@ export function KanjiListScreen() {
           flexDirection: "row",
           flexWrap: "wrap",
         }}
-        data={[...kanjiList, <AddCard key="add-card" />]}
+        data={[...searchedKanjis, <AddCard key="add-card" />]}
         renderItem={({ item }) => renderListItem(item, handleRemove)}
         keyExtractor={(item) => (item as Kanji).id ?? "add-card"}
       />
