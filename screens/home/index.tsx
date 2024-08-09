@@ -53,7 +53,7 @@ export function KanjiListScreen() {
       headerRight: () => (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text style={{ color: "white" }}>{kanjiList.length}</Text>
-          <Button title="+1" onPress={() => router.push("/add-kanji")} />
+          <Button title="+1" onPress={() => router.navigate("/add-kanji")} />
         </View>
       ),
     });
