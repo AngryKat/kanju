@@ -15,3 +15,12 @@ export interface Kanji {
   notes: string;
   dictionary: DictionaryEntry[]
 }
+
+export interface Setting<T> {
+  title: string;
+  value: T;
+}
+
+export interface Settings {
+  autoDictionaryEntryAdd: Setting<boolean>
+}
