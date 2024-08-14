@@ -14,6 +14,7 @@ import { initKanjis } from "@/utils/kanji-async-storage";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomNavbar } from "@/components/bottom-navbar";
 import { initSettings } from "@/utils/settings-async-storage";
+import { initDecks } from "@/utils/decks-async-storage";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -34,6 +35,7 @@ export default function RootLayout() {
     const init = async () => {
       await initKanjis();
       await initSettings();
+      await initDecks();
     };
     init();
   }, [initKanjis, initSettings]);
@@ -78,6 +80,24 @@ export default function RootLayout() {
           />
           <Stack.Screen
             name="[kanjiId]/edit"
+            options={{
+              title: "",
+            }}
+          />
+          <Stack.Screen
+            name="add-deck"
+            options={{
+              title: "",
+            }}
+          />
+          <Stack.Screen
+            name="decks"
+            options={{
+              title: "",
+            }}
+          />
+          <Stack.Screen
+            name="select-deck-kanjis"
             options={{
               title: "",
             }}

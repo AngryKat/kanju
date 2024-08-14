@@ -24,3 +24,9 @@ export interface Setting<T> {
 export interface Settings {
   autoDictionaryEntryAdd: Setting<boolean | undefined>;
 }
+
+export interface Deck {
+  id: string;
+  title: string;
+  kanjiIds: Array<Kanji['id']>
+}

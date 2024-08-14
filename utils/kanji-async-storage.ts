@@ -24,7 +24,7 @@ export async function getDictionaryEntries() {
   return arrayUniqueByKey.filter((entry) => !!entry.meaning);
 }
 
-export async function getKanjis() {
+export function getKanjis() {
   if (!kanjis) throw new Error("Kanjis are not initialized");
   return kanjis;
 }
@@ -39,7 +39,7 @@ export async function removeKanjiById(kanjiId: string) {
   await AsyncStorage.setItem("kanjis", JSON.stringify(kanjis));
 }
 
-export async function getKanjiById(kanjiId: string) {
+export function getKanjiById(kanjiId: string) {
   if (!kanjis) throw new Error("Kanjis are not initialized");
   return kanjis[kanjiId];
 }
@@ -52,4 +52,10 @@ export async function editKanji(
   const kanjiEdited = await getKanjiById(kanjiId);
   const newKanji = { ...kanjiEdited, ...newData };
   kanjis[kanjiId] = { ...newKanji };
+  await AsyncStorage.setItem("kanjis", JSON.stringify(kanjis));
+}
+
+export async function getKanjisIds() {
+  if (!kanjis) throw new Error("Kanjis are not initialized");
+  return Object.keys(kanjis)
 }

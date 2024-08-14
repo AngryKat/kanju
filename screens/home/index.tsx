@@ -34,10 +34,14 @@ const renderListItem = (
 export function KanjiListScreen() {
   const navigation = useNavigation();
   const [kanjiList, setKanjiList] = useState<Kanji[]>([]);
-  const searchedKanjis = useSearchBar(kanjiList, ["kanji", "readings.kun", "readings.on"])
-  const getAllKanjis = useCallback(async () => {
+  const searchedKanjis = useSearchBar(kanjiList, [
+    "kanji",
+    "readings.kun",
+    "readings.on",
+  ]);
+  const getAllKanjis = useCallback(() => {
     try {
-      const data = await getKanjis();
+      const data = getKanjis();
       setKanjiList(Object.values(data));
     } catch (e) {
       console.error(e);
@@ -76,8 +80,11 @@ export function KanjiListScreen() {
           flexDirection: "row",
           flexWrap: "wrap",
         }}
-        data={[...searchedKanjis, <AddCard key="add-card" />]}
-        renderItem={({ item }) => renderListItem(item, handleRemove)}
+        ListFooterComponent={() => <AddCard key="add-card" />}
+        data={[...searchedKanjis]}
+        renderItem={({ item }) => (
+          <KanjiCard kanji={item as Kanji} onRemove={handleRemove} />
+        )}
         keyExtractor={(item) => (item as Kanji).id ?? "add-card"}
       />
     </SafeAreaView>

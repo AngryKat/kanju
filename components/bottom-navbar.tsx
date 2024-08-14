@@ -77,17 +77,25 @@ export function BottomNavbar() {
       >
         <Tab
           href="/"
-          icon={<Text style={{ fontSize: 24 }}>漢字</Text>}
+          icon={<Text style={{ fontSize: 20 }}>漢字</Text>}
           title="Kanjis"
         />
         <Tab
           href="dictionary"
-          icon={<Text style={{ fontSize: 24 }}>辞書</Text>}
+          iconName="book-sharp"
+          // icon={<Text style={{ fontSize: 20 }}>辞書</Text>}
           title="Dictionary"
         />
         <Tab
+          href="decks"
+          iconName="albums-sharp"
+          // icon={<Text style={{ fontSize: 20 }}>辞書</Text>}
+          title="Decks"
+        />
+        <Tab
           href="settings"
-          icon={<Text style={{ fontSize: 24 }}>辞書</Text>}
+          iconName="settings-sharp"
+          // icon={<Text style={{ fontSize: 20 }}>辞書</Text>}
           title="Settings"
         />
       </View>
