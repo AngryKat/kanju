@@ -33,8 +33,8 @@ export const DictionaryRead: React.FC<DictionaryReadProps> = ({
                   char
                 )
             )
-            .map(async (kanji) => {
-              return await getKanjiById(kanji);
+            .map((kanji) => {
+              return getKanjiById(kanji);
             })
         )
       ).filter((k) => !!k);

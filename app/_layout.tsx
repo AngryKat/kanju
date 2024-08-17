@@ -51,39 +51,9 @@ export default function RootLayout() {
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen
-            name="index"
+            name="(tabs)"
             options={{
-              title: "Kanji",
-            }}
-          />
-          <Stack.Screen
-            name="add-kanji"
-            options={{
-              title: "Add new kanji",
-            }}
-          />
-          <Stack.Screen
-            name="dictionary"
-            options={{
-              title: "Dictionary",
-            }}
-          />
-          <Stack.Screen
-            name="settings"
-            options={{
-              title: "Settings",
-            }}
-          />
-          <Stack.Screen
-            name="[kanjiId]/index"
-            options={{
-              title: "",
-            }}
-          />
-          <Stack.Screen
-            name="[kanjiId]/edit"
-            options={{
-              title: "",
+              headerShown: false,
             }}
           />
           <Stack.Screen
@@ -106,7 +76,6 @@ export default function RootLayout() {
           />
           <Stack.Screen name="+not-found" />
         </Stack>
-        <BottomNavbar />
       </ThemeProvider>
     </GestureHandlerRootView>
   );

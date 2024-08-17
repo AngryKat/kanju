@@ -30,3 +30,4 @@ export interface Deck {
   title: string;
   kanjiIds: string[]
 }
+export type Mode = "read" | "create" | "edit";

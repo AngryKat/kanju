@@ -9,7 +9,7 @@ import Animated, {
 
 export function AddCard() {
   return (
-    <Pressable onPress={() => { router.navigate('add-kanji')}}>
+    <Pressable onPress={() => { router.navigate('/add-kanji')}}>
       <View
         style={{
           padding: 12,

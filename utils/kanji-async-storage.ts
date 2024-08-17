@@ -12,7 +12,7 @@ export async function initKanjis() {
   }
 }
 
-export async function getDictionaryEntries() {
+export function getDictionaryEntries() {
   if (!kanjis) throw new Error("Kanjis are not initialized");
   const arrayUniqueByKey = [
     ...new Map(
@@ -49,13 +49,13 @@ export async function editKanji(
   newData: Partial<Omit<Kanji, "id" | "kanji">>
 ) {
   if (!kanjis) throw new Error("Kanjis are not initialized");
-  const kanjiEdited = await getKanjiById(kanjiId);
-  const newKanji = { ...kanjiEdited, ...newData };
+  const kanjiToEdit = getKanjiById(kanjiId);
+  const newKanji = { ...kanjiToEdit, ...newData };
   kanjis[kanjiId] = { ...newKanji };
   await AsyncStorage.setItem("kanjis", JSON.stringify(kanjis));
 }
 
-export async function getKanjisIds() {
+export function getKanjisIds() {
   if (!kanjis) throw new Error("Kanjis are not initialized");
   return Object.keys(kanjis)
 }

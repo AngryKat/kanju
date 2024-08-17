@@ -20,7 +20,7 @@ export async function initSettings() {
   }
 }
 
-export async function getSettings() {
+export function getSettings() {
   if (!settings) throw new Error("Settings are not initialized");
   return settings;
 }
@@ -30,6 +30,6 @@ export async function changeSetting(settingKey: keyof Settings, newValue: any) {
   await AsyncStorage.setItem("settings", JSON.stringify(settings));
 }
 
-export async function getSetting(settingKey: keyof Settings) {
+export function getSetting(settingKey: keyof Settings) {
   return settings[settingKey]
 }

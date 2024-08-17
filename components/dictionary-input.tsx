@@ -87,6 +87,7 @@ export const DictionaryInput: React.FC<Props> = ({ kanji, data, onUpdate }) => {
   };
 
   const handleAddDefault = () => {
+    if (!kanji) return;
     const updatedEntries = { ...entries };
     const newEntry: DictionaryEntry = {
       id: uuid.v4() as string,
@@ -114,11 +115,7 @@ export const DictionaryInput: React.FC<Props> = ({ kanji, data, onUpdate }) => {
             },
           ]}
         >
-          <Ionicons
-            name="trash-outline"
-            size={32}
-            color="#505050"
-          />
+          <Ionicons name="trash-outline" size={32} color="#505050" />
         </Animated.View>
       </Pressable>
     );
