@@ -52,49 +52,67 @@ const renderAddNewDeckCard = () => {
 const renderRightActions =
   (id: string, onRemove: (id: string) => void, onEdit: (id: string) => void) =>
   (progress: any, dragX: any) => {
-    console.log({ dragX });
-    const scale = dragX.interpolate({
+    const opacityRightButton = dragX.interpolate({
       inputRange: [-100, 0],
-      outputRange: [1, 0.5],
+      outputRange: [1, 0],
+      extrapolate: "clamp",
+    });
+    const opacityLeftButton = dragX.interpolate({
+      inputRange: [-135, 0],
+      outputRange: [1, 0],
       extrapolate: "clamp",
     });
 
     return (
-      <Animated.View
-        style={[
-          {
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            transform: [{ scale }],
-            marginBottom: 10,
-            marginRight: 14,
-          },
-        ]}
-      >
-        <Pressable
-          onPress={() => onEdit(id)}
-          style={{
-            backgroundColor: "#eb9234",
-            padding: 14,
-            borderBottomLeftRadius: 15,
-            borderTopLeftRadius: 15,
-          }}
+      <View style={{ flexDirection: "row" }}>
+        <Animated.View
+          style={[
+            {
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 10,
+              marginRight: 8,
+              marginLeft: -4,
+              opacity: opacityLeftButton,
+            },
+          ]}
         >
-          <Ionicons name="pencil" size={28} color="white" />
-        </Pressable>
-        <Pressable
-          onPress={() => onRemove(id)}
-          style={{
-            backgroundColor: "red",
-            padding: 14,
-            borderBottomRightRadius: 15,
-            borderTopRightRadius: 15,
-          }}
+          <Pressable
+            onPress={() => onEdit(id)}
+            style={{
+              backgroundColor: "#eb9234",
+              padding: 14,
+              borderRadius: 15,
+            }}
+          >
+            <Ionicons name="pencil" size={28} color="white" />
+          </Pressable>
+        </Animated.View>
+        <Animated.View
+          style={[
+            {
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 10,
+              marginRight: 14,
+              opacity: opacityRightButton,
+            },
+          ]}
         >
-          <Ionicons name="trash-outline" size={28} color="white" />
-        </Pressable>
-      </Animated.View>
+          <Pressable
+            onPress={() => onRemove(id)}
+            style={{
+              backgroundColor: "red",
+              padding: 14,
+              borderRadius: 15,
+            }}
+          >
+            <Ionicons name="trash-outline" size={28} color="white" />
+          </Pressable>
+        </Animated.View>
+      </View>
     );
   };
 

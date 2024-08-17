@@ -9,7 +9,7 @@ import {
   useNavigation,
 } from "expo-router";
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
-import { ActivityIndicator, SafeAreaView, View } from "react-native";
+import { ActivityIndicator, SafeAreaView, ScrollView } from "react-native";
 
 export default function DeckByIdPage() {
   const navigation = useNavigation();
@@ -39,14 +39,14 @@ export default function DeckByIdPage() {
   }, [navigation, deck]);
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View
-        style={{
+      <ScrollView
+        contentContainerStyle={{
           flexDirection: "row",
           flexWrap: "wrap",
           gap: 10,
           alignSelf: "baseline",
-          maxWidth: "90%",
           marginVertical: 10,
+          padding: 10
         }}
       >
         {filteredKanjis ? (
@@ -56,7 +56,7 @@ export default function DeckByIdPage() {
         ) : (
           <ActivityIndicator />
         )}
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

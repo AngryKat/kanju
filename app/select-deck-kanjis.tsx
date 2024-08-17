@@ -23,7 +23,7 @@ export default function SelectDeckKanjisPage() {
   const { title } = useLocalSearchParams();
   const [kanjis, setKanjis] = useState<Kanji[]>([]);
   const [checkedKanjis, setCheckedKanjis] = useState<
-    Map<Kanji["id"], Kanji["kanji"]>
+    Map<string, string>
   >(new Map());
   const filteredKanjis = useSearchBar(kanjis, [
     "kanji",
@@ -42,8 +42,8 @@ export default function SelectDeckKanjisPage() {
   });
 
   const handleOnCheck = (
-    kanjiId: Kanji["id"],
-    kanji: Kanji["kanji"],
+    kanjiId: string,
+    kanji: string,
     isChecked: boolean
   ) => {
     const updatedMap = new Map(checkedKanjis);
@@ -63,9 +63,7 @@ export default function SelectDeckKanjisPage() {
         />
         <FlatList
           contentContainerStyle={{
-            flexDirection: "row",
-            flexWrap: "wrap",
-            gap: 6,
+            gap: 8,
             paddingHorizontal: 14,
             paddingTop: 8,
           }}

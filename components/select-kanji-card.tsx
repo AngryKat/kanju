@@ -20,14 +20,14 @@ export function SelectKanjiCard({
   return (
     <Pressable onPress={() => onCheck(kanji.id, kanji.kanji, !isChecked)}>
       <Card style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text style={{ color: "whitesmoke", fontSize: 24 }}>{kanji.kanji}</Text>
         <BouncyCheckbox
-          size={16}
+          size={18}
           isChecked={isChecked}
           onPress={(isCheckedInput) =>
             onCheck(kanji.id, kanji.kanji, isCheckedInput)
           }
         />
-        <Text style={{ color: "whitesmoke", fontSize: 20 }}>{kanji.kanji}</Text>
       </Card>
     </Pressable>
   );
