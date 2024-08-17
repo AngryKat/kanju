@@ -24,3 +24,5 @@ export interface Setting<T> {
 export interface Settings {
   autoDictionaryEntryAdd: Setting<boolean | undefined>;
 }
+
+export type Mode = "read" | "create" | "edit";
