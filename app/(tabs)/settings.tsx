@@ -51,9 +51,9 @@ const SwitchInput = ({
 
 export default function DictionaryPage() {
   const [settings, setSettings] = useState<Settings>();
-  const updateSettings = useCallback(async () => {
+  const updateSettings = useCallback(() => {
     try {
-      const data = await getSettings();
+      const data = getSettings();
       setSettings(data);
     } catch (e) {
       console.error(e);

@@ -6,7 +6,7 @@ export default function TabLayout() {
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: "#eb9234" }}>
       <Tabs.Screen
-        name="index"
+        name="(kanjis)"
         options={{
           headerShown: false,
           title: "Kanjis",
@@ -21,6 +21,15 @@ export default function TabLayout() {
           title: "Dictionary",
           tabBarIcon: ({ color }) => (
             <FontAwesome size={20} name="book" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={20} name="cog" color={color} />
           ),
         }}
       />

@@ -44,10 +44,10 @@ export function KanjiCard({
       (buttonIndex) => {
         switch (buttonIndex) {
           case 1:
-            router.navigate(`/${kanji.id}`);
+            router.navigate(`${kanji.id}`);
             break;
           case 2:
-            router.navigate(`/${kanji.id}/edit`);
+            router.navigate(`${kanji.id}/edit`);
             break;
           case 3:
             onRemove(kanji.id);

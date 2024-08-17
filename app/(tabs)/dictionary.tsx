@@ -11,9 +11,9 @@ export default function DictionaryPage() {
     []
   );
   const searchedEntries = useSearchBar(dictionaryEntries, ["word", "reading", "meaning"]);
-  const getAllDictionaryEntries = useCallback(async () => {
+  const getAllDictionaryEntries = useCallback(() => {
     try {
-      const data = await getDictionaryEntries();
+      const data = getDictionaryEntries();
       setDictionaryEntries(data);
     } catch (e) {
       console.error(e);

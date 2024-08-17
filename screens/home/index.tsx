@@ -35,9 +35,9 @@ export function KanjiListScreen() {
   const navigation = useNavigation();
   const [kanjiList, setKanjiList] = useState<Kanji[]>([]);
   const searchedKanjis = useSearchBar(kanjiList, ["kanji", "readings.kun", "readings.on"])
-  const getAllKanjis = useCallback(async () => {
+  const getAllKanjis = useCallback(() => {
     try {
-      const data = await getKanjis();
+      const data = getKanjis();
       setKanjiList(Object.values(data));
     } catch (e) {
       console.error(e);
@@ -55,7 +55,7 @@ export function KanjiListScreen() {
       headerRight: () => (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text style={{ color: "white" }}>{kanjiList.length}</Text>
-          <Button title="+1" onPress={() => router.navigate("/add-kanji")} />
+          <Button title="+1" onPress={() => router.navigate("add-kanji")} />
         </View>
       ),
     });

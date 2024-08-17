@@ -1,4 +1,4 @@
-import { KanjiPageLayout } from "@/components/kanji-page-layout";
+import { KanjiPageLayout } from "@/components/kanji-page-layout/kanji-page-layout";
 
 export function KanjiPageScreen() {
   return (

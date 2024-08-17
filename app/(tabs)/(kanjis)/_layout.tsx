@@ -9,12 +9,7 @@ export default function Layout() {
           headerTitle: "Kanjis",
         }}
       />
-      <Stack.Screen
-        name="add-kanji"
-        options={{
-          headerTitle: "",
-        }}
-      />
+      <Stack.Screen name="add-kanji" />
     </Stack>
   );
 }
