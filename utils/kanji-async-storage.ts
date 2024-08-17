@@ -46,7 +46,7 @@ export async function getKanjiById(kanjiId: string) {
 
 export async function editKanji(
   kanjiId: string,
-  newData: Omit<Kanji, "id" | "kanji">
+  newData: Partial<Omit<Kanji, "id" | "kanji">>
 ) {
   if (!kanjis) throw new Error("Kanjis are not initialized");
   const kanjiEdited = await getKanjiById(kanjiId);

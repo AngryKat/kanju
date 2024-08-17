@@ -13,6 +13,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { initKanjis } from "@/utils/kanji-async-storage";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomNavbar } from "@/components/bottom-navbar";
+import { initSettings } from "@/utils/settings-async-storage";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -32,9 +33,10 @@ export default function RootLayout() {
   useEffect(() => {
     const init = async () => {
       await initKanjis();
+      await initSettings();
     };
     init();
-  }, [initKanjis]);
+  }, [initKanjis, initSettings]);
 
   if (!loaded) {
     return null;

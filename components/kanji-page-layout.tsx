@@ -6,6 +6,7 @@ import {
   Pressable,
   Keyboard,
   Button,
+  Alert,
 } from "react-native";
 
 import { useEffect, useLayoutEffect, useState } from "react";
@@ -17,12 +18,88 @@ import {
   regexKanji,
   validateKanji,
 } from "@/components/kanji-input";
-import { addKanji, getKanjiById } from "@/utils/kanji-async-storage";
+import { addKanji, editKanji, getKanjiById } from "@/utils/kanji-async-storage";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { DictionaryInput } from "./dictionary-input";
 import { DictionaryRead } from "./dictionary-read";
-import type { DictionaryEntry } from "@/utils/types";
+import type { DictionaryEntry, Kanji } from "@/utils/types";
+import { changeSetting, getSetting } from "@/utils/settings-async-storage";
 
+const showAlertSetDefault = () => {
+  Alert.alert("", "Set as default behavior?", [
+    {
+      text: "Cancel",
+      onPress: () => {
+        router.navigate("/");
+        return;
+      },
+      style: "cancel",
+    },
+    {
+      text: "Ok",
+      onPress: async () => {
+        await changeSetting("autoDictionaryEntryAdd", true);
+        router.navigate("/");
+        return;
+      },
+    },
+  ]);
+};
+
+const autoAdd = (kanji: Kanji) => {
+  kanji.dictionary.forEach(async (entry) => {
+    const kanjis = entry.word
+      .split("")
+      .filter(
+        (char) =>
+          /[\u4e00-\u9faf]|[\u3400-\u4dbf]/.test(char) && char !== kanji.kanji
+      );
+    const kanjisFromStorage = (
+      await Promise.all(kanjis.map(async (kan) => await getKanjiById(kan)))
+    ).filter((kan) => kan?.dictionary.every(({ word }) => word !== entry.word));
+    if (kanjisFromStorage.length === 0) {
+      router.navigate("/");
+      return;
+    }
+
+    const autoDictionaryEntryAdd = await getSetting("autoDictionaryEntryAdd");
+    // omit cases when autoDictionaryEntryAdd.value is undefined
+    if (autoDictionaryEntryAdd.value === false) {
+      router.navigate("/");
+      return;
+    }
+
+    kanjisFromStorage.forEach(async (kan) => {
+      const message = `The word ${entry.word} has kanji ${kan.kanji}. Do you want to add ${entry.word} as entry in ${kan.kanji} dictionary?`;
+      // omit cases when autoDictionaryEntryAdd.value is undefined
+      if (autoDictionaryEntryAdd.value === true) {
+        await editKanji(kan.id, {
+          dictionary: [...kan.dictionary, entry],
+        });
+      } else
+        Alert.alert("", message, [
+          {
+            text: "Cancel",
+            onPress: () => {
+              router.navigate("/");
+              return;
+            },
+            style: "cancel",
+          },
+          {
+            text: "Ok",
+            onPress: async () => {
+              await editKanji(kan.id, {
+                dictionary: [...kan.dictionary, entry],
+              });
+              if (autoDictionaryEntryAdd.value === undefined)
+                showAlertSetDefault();
+            },
+          },
+        ]);
+    });
+  });
+};
 interface FormData {
   kanji: string;
   on: string[];
@@ -80,6 +157,7 @@ export function KanjiPageLayout({ mode }: { mode: Mode }) {
       dictionary,
     };
     await addKanji(newKanji);
+    autoAdd(newKanji);
     if (mode === "edit") router.back();
     else router.navigate("/");
   };

@@ -13,5 +13,14 @@ export interface Kanji {
     on: string[];
   };
   notes: string;
-  dictionary: DictionaryEntry[]
+  dictionary: DictionaryEntry[];
+}
+
+export interface Setting<T> {
+  title: string;
+  value: T;
+}
+
+export interface Settings {
+  autoDictionaryEntryAdd: Setting<boolean | undefined>;
 }
