@@ -80,7 +80,8 @@ export function KanjiPageLayout({ mode }: { mode: Mode }) {
       dictionary,
     };
     await addKanji(newKanji);
-    router.navigate("/");
+    if (mode === "edit") router.back();
+    else router.navigate("/");
   };
 
   useEffect(() => {
@@ -103,14 +104,18 @@ export function KanjiPageLayout({ mode }: { mode: Mode }) {
   useLayoutEffect(() => {
     navigation.setOptions({
       title: getModeTitle(mode, kanji),
-      ...(mode === "read" && {
-        headerRight: () => (
+      headerRight: () =>
+        mode === "read" ? (
+          <Button onPress={() => router.push(`/${kanji}/edit`)} title="Edit" />
+        ) : (
           <Button
-            onPress={() => router.replace(`/${kanji}/edit`)}
-            title="Edit"
+            onPress={() => {
+              if (disabledButton) return;
+              handleSubmit();
+            }}
+            title="Submit"
           />
         ),
-      }),
     });
   }, [kanji, mode]);
 
@@ -235,8 +240,9 @@ export function KanjiPageLayout({ mode }: { mode: Mode }) {
               backgroundColor: "#eb9234",
               padding: 14,
               borderRadius: 12,
-              marginTop: 40,
+              marginTop: 20,
               marginHorizontal: 14,
+              marginBottom: 14,
             }}
             disabled={disabledButton}
           >

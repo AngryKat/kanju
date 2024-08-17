@@ -1,10 +1,20 @@
-import { Stack } from 'expo-router/stack';
+import { Stack } from "expo-router/stack";
 
 export default function Layout() {
   return (
     <Stack>
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="add-kanji" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="index"
+        options={{
+          headerTitle: "Kanjis",
+        }}
+      />
+      <Stack.Screen
+        name="add-kanji"
+        options={{
+          headerTitle: "",
+        }}
+      />
     </Stack>
   );
 }

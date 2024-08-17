@@ -1,15 +1,17 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Tabs } from "expo-router";
+import { Text } from "react-native";
 
 export default function TabLayout() {
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: "blue" }}>
+    <Tabs screenOptions={{ tabBarActiveTintColor: "#eb9234" }}>
       <Tabs.Screen
         name="index"
         options={{
           headerShown: false,
+          title: "Kanjis",
           tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="home" color={color} />
+            <Text style={{ color, fontSize: 20 }}>漢字</Text>
           ),
         }}
       />
@@ -18,7 +20,7 @@ export default function TabLayout() {
         options={{
           title: "Dictionary",
           tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="book" color={color} />
+            <FontAwesome size={20} name="book" color={color} />
           ),
         }}
       />
