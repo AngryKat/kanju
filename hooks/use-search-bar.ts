@@ -14,9 +14,10 @@ export const useSearchBar = <T>(
 
   // Helper function to get the value at a nested path
   const getValueAtPath = (obj: T, path: string) => {
-    const value = path.split(".").reduce((acc, key) => acc && acc[key], obj as any);
-    console.log('aaaa', { value, path })
-    if (Array.isArray(value) && value.length === 0) return ""
+    const value = path
+      .split(".")
+      .reduce((acc, key) => acc && acc[key], obj as any);
+    if (Array.isArray(value) && value.length === 0) return "";
     if (Array.isArray(value)) return value[0];
     return value;
   };
@@ -25,16 +26,20 @@ export const useSearchBar = <T>(
     if (searchText === "") {
       return setFilteredData(data);
     }
-    const filtered = data?.filter((item) =>
-      byKeys.reduce((acc: boolean, key: string) => {
+
+    const filtered = data?.filter((item) => {
+      if (typeof item === "string") {
+        return item === searchText;
+      }
+      return byKeys.reduce((acc: boolean, key: string) => {
         return (
           acc ||
           (getValueAtPath(item, key) as string)
             .toLowerCase()
             .includes(searchText.toLowerCase())
         );
-      }, false)
-    );
+      }, false);
+    });
 
     setFilteredData(filtered);
   }, [searchText, data]);

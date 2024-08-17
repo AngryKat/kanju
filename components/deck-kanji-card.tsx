@@ -34,13 +34,7 @@ const renderCardBack = (readings: Readings) => {
   );
 };
 
-export function DeckKanjiCard({ kanjiId }: { kanjiId: Kanji["id"] }) {
-  const [kanji, setKanji] = useState<Kanji>();
-
-  useEffect(() => {
-    setKanji(getKanjiById(kanjiId));
-  }, [kanjiId]);
-
+export function DeckKanjiCard({ kanji }: { kanji: Kanji }) {
   if (!kanji) {
     return (
       <FlipCard
@@ -84,10 +78,10 @@ export function DeckKanjiCard({ kanjiId }: { kanjiId: Kanji["id"] }) {
       (buttonIndex) => {
         switch (buttonIndex) {
           case 1:
-            router.navigate(`/${kanjiId}`);
+            router.navigate(`/${kanji.id}`);
             break;
           case 2:
-            router.navigate(`/${kanjiId}/edit`);
+            router.navigate(`/${kanji.id}/edit`);
             break;
           // case 3:
           //   onRemove(kanji.id);

@@ -28,5 +28,5 @@ export interface Settings {
 export interface Deck {
   id: string;
   title: string;
-  kanjiIds: Array<Kanji['id']>
+  kanjiIds: string[]
 }

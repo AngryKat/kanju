@@ -1,10 +1,13 @@
 import { Card } from "@/components/card";
 import { SelectKanjiCard } from "@/components/select-kanji-card";
 import { useSearchBar } from "@/hooks/use-search-bar";
+import { addDeck } from "@/utils/decks-async-storage";
 import { getKanjis } from "@/utils/kanji-async-storage";
 import { Kanji } from "@/utils/types";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
+import uuid from "react-native-uuid";
+const { v4: uuidv4 } = uuid;
 import {
   Pressable,
   FlatList,
@@ -34,11 +37,9 @@ export default function SelectDeckKanjisPage() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: `Select kanjis for deck ${title}`,
+      headerTitle: `Select kanjis for the deck ${title}`,
     });
   });
-
-  console.log({ checkedKanjis });
 
   const handleOnCheck = (
     kanjiId: Kanji["id"],
@@ -56,6 +57,10 @@ export default function SelectDeckKanjisPage() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ paddingBottom: 10, flex: 0.7 }}>
+        <Button
+          title="Deselect all"
+          onPress={() => setCheckedKanjis(new Map([]))}
+        />
         <FlatList
           contentContainerStyle={{
             flexDirection: "row",
@@ -64,7 +69,6 @@ export default function SelectDeckKanjisPage() {
             paddingHorizontal: 14,
             paddingTop: 8,
           }}
-          // data={[...kanjis, ...kanjis]}
           data={filteredKanjis}
           renderItem={({ item }) => (
             <SelectKanjiCard
@@ -79,11 +83,6 @@ export default function SelectDeckKanjisPage() {
         style={{ flex: 0.3, margin: 10, padding: 10, marginTop: 0, gap: 16 }}
       >
         <View>
-          <Text
-            style={{ color: "whitesmoke", textAlign: "center", fontSize: 18 }}
-          >
-            Kanjis added to the deck
-          </Text>
           <Card
             style={{
               marginTop: 10,
@@ -103,12 +102,15 @@ export default function SelectDeckKanjisPage() {
             padding: 14,
             borderRadius: 12,
           }}
-          onPress={() =>
-            console.log("New deck ", {
-              title,
-              kanjis: [...checkedKanjis.keys()],
-            })
-          }
+          onPress={async () => {
+            const newDeck = {
+              id: uuidv4() as string,
+              title: title as string,
+              kanjiIds: [...checkedKanjis.keys()],
+            };
+            await addDeck(newDeck);
+            router.navigate("decks");
+          }}
         >
           <Text
             style={{

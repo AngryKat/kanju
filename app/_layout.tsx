@@ -33,12 +33,14 @@ export default function RootLayout() {
 
   useEffect(() => {
     const init = async () => {
-      await initKanjis();
-      await initSettings();
-      await initDecks();
+      try {
+        await Promise.all([initKanjis(), initSettings(), initDecks()]);
+      } catch (e) {
+        console.error(e);
+      }
     };
     init();
-  }, [initKanjis, initSettings]);
+  }, [initKanjis, initSettings, initDecks]);
 
   if (!loaded) {
     return null;
@@ -91,7 +93,7 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
-            name="decks"
+            name="decks/index"
             options={{
               title: "",
             }}
