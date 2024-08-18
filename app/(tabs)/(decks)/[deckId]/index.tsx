@@ -4,12 +4,18 @@ import { getDeck } from "@/utils/decks-async-storage";
 import { getKanjiById } from "@/utils/kanji-async-storage";
 import { Deck } from "@/utils/types";
 import {
+  router,
   useFocusEffect,
   useLocalSearchParams,
   useNavigation,
 } from "expo-router";
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
-import { ActivityIndicator, SafeAreaView, ScrollView } from "react-native";
+import {
+  ActivityIndicator,
+  Button,
+  SafeAreaView,
+  ScrollView,
+} from "react-native";
 
 export default function DeckByIdPage() {
   const navigation = useNavigation();
@@ -35,6 +41,9 @@ export default function DeckByIdPage() {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: `Deck ${deck?.title}`,
+      headerRight: () => (
+        <Button title="Edit" onPress={() => router.push(`/${deckId}/edit`)} />
+      ),
     });
   }, [navigation, deck]);
   return (
@@ -46,7 +55,7 @@ export default function DeckByIdPage() {
           gap: 10,
           alignSelf: "baseline",
           marginVertical: 10,
-          padding: 10
+          padding: 10,
         }}
       >
         {filteredKanjis ? (

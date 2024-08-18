@@ -34,7 +34,22 @@ export function getDeck(deckId: string) {
 
 export async function removeDeck(deckId: string) {
   if (!decks) throw new Error("Decks are not initialized");
-  const updatedDecks = decks.filter((d) => d.id !== deckId)
-  decks = updatedDecks
-  await AsyncStorage.setItem('decks', JSON.stringify(decks))
+  const updatedDecks = decks.filter((d) => d.id !== deckId);
+  decks = updatedDecks;
+  await AsyncStorage.setItem("decks", JSON.stringify(decks));
+}
+
+export async function editDeck(
+  deckId: string,
+  newData: Partial<Omit<Deck, "id">>
+) {
+  if (!decks) throw new Error("Decks are not initialized");
+  const updatedDeckIndex = decks.findIndex((deck) => deck.id === deckId);
+  if (updatedDeckIndex < 0)
+    throw new Error(`Could not find deck with id ${deckId}`);
+  decks[updatedDeckIndex] = {
+    ...decks[updatedDeckIndex],
+    ...newData,
+  };
+  await AsyncStorage.setItem("decks", JSON.stringify(decks));
 }

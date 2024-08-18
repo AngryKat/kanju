@@ -1,7 +1,7 @@
 import { Card } from "@/components/card";
 import { SelectKanjiCard } from "@/components/select-kanji-card";
 import { useSearchBar } from "@/hooks/use-search-bar";
-import { addDeck } from "@/utils/decks-async-storage";
+import { addDeck, editDeck, getDeckKanjis } from "@/utils/decks-async-storage";
 import { getKanjis } from "@/utils/kanji-async-storage";
 import { Kanji } from "@/utils/types";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
@@ -20,7 +20,7 @@ import {
 
 export default function SelectDeckKanjisPage() {
   const navigation = useNavigation();
-  const { title } = useLocalSearchParams();
+  const { title, deckId } = useLocalSearchParams();
   const [kanjis, setKanjis] = useState<Kanji[]>([]);
   const [checkedKanjis, setCheckedKanjis] = useState<Map<string, string>>(
     new Map()
@@ -30,16 +30,31 @@ export default function SelectDeckKanjisPage() {
     "readings.on",
     "readings.kun",
   ]);
+  const kanjisFromStorage = getKanjis();
   useEffect(() => {
-    const kanjisFromStorage = getKanjis();
+    if (!kanjisFromStorage) return;
     setKanjis(Object.values(kanjisFromStorage));
-  }, []);
+  }, [kanjisFromStorage]);
+
+  useEffect(() => {
+    if (!deckId) return;
+    const deckKanjis = getDeckKanjis(deckId as string);
+    setCheckedKanjis(
+      new Map(
+        deckKanjis?.map((kanjiId) => [
+          kanjiId,
+          kanjisFromStorage[kanjiId].kanji,
+        ]) ?? []
+      )
+    );
+  }, [deckId, kanjisFromStorage]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: `Kanjis for the deck ${title}`,
+      headerBackTitle: "Back",
     });
-  });
+  }, [navigation, title]);
 
   const handleOnCheck = (
     kanjiId: string,
@@ -53,6 +68,21 @@ export default function SelectDeckKanjisPage() {
       updatedMap.delete(kanjiId);
     }
     setCheckedKanjis(updatedMap);
+  };
+
+  const handleSubmit = async () => {
+    const newDeck = {
+      title: title as string,
+      kanjiIds: [...checkedKanjis.keys()],
+    };
+    if (deckId) {
+      await editDeck(deckId as string, {
+        ...newDeck,
+      });
+    } else {
+      await addDeck({ id: uuidv4() as string, ...newDeck });
+    }
+    router.navigate("(decks)");
   };
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -104,15 +134,7 @@ export default function SelectDeckKanjisPage() {
             borderRadius: 12,
             marginTop: 10,
           }}
-          onPress={async () => {
-            const newDeck = {
-              id: uuidv4() as string,
-              title: title as string,
-              kanjiIds: [...checkedKanjis.keys()],
-            };
-            await addDeck(newDeck);
-            router.navigate("(decks)");
-          }}
+          onPress={handleSubmit}
         >
           <Text
             style={{
