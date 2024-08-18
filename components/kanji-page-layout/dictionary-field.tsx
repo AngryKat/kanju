@@ -15,7 +15,6 @@ export function DictionaryField({
   onInputChange,
   readOnly = false,
 }: Props) {
-  console.log({ readOnly })
   return (
     <>
       <Text
@@ -31,6 +30,11 @@ export function DictionaryField({
         Dictionary
       </Text>
 
+      {/* <DictionaryInput
+        kanji={kanji}
+        data={dictionary}
+        onUpdate={onInputChange}
+      /> */}
       {readOnly ? (
         <DictionaryRead kanji={kanji} data={dictionary} />
       ) : (

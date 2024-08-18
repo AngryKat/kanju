@@ -10,9 +10,16 @@ import {
   StyleSheet,
 } from "react-native";
 
-import { ReactNode, useEffect, useLayoutEffect, useState } from "react";
+import {
+  ReactNode,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Card } from "@/components/card";
-import { ReadingInput } from "@/components/reading-input";
+import { ReadingInput, validateReadings } from "@/components/reading-input";
 import { NotesInput } from "@/components/notes-input";
 import {
   KanjiInput,
@@ -42,31 +49,52 @@ const DEFAULT_FORM_DATA: FormData = {
 };
 
 const getModeTitle = (mode: Mode, title: string) => {
-  console.log({ mode })
   if (mode === "read") return title;
   return mode === "create" ? `Add kanji` : `Edit ${title}`;
 };
 
 export function KanjiPageLayout({ mode }: { mode: Mode }) {
+  const [isValid, setIsValid] = useState(false);
   const navigation = useNavigation();
   const { kanjiId } = useLocalSearchParams();
-  const [{ kanji, kun, on, notes, dictionary }, setFormData] =
-    useState<FormData>(DEFAULT_FORM_DATA);
-  const disabledButton =
-    kanji === "" ||
-    !validateKanji(kanji) ||
-    (kun.length === 0 && on.length === 0);
+  const formData = useRef<FormData>(DEFAULT_FORM_DATA);
+  const kanjiById = getKanjiById(kanjiId as string);
+
+  useEffect(() => {
+    formData.current =
+      mode === "create"
+        ? { ...DEFAULT_FORM_DATA }
+        : {
+            kanji: kanjiById.kanji,
+            notes: kanjiById.notes,
+            dictionary: kanjiById.dictionary,
+            ...kanjiById.readings,
+          };
+  }, [mode, kanjiById]);
+
   const readOnly = mode === "read";
-  const handleFieldInput =
-    (fieldName: keyof FormData) =>
-    (value: string | string[] | DictionaryEntry[]) => {
-      setFormData((prev) => ({ ...prev, [fieldName]: value }));
+  const handleFieldInput = (fieldName: keyof FormData) => (value: any) => {
+    formData.current = {
+      ...formData.current,
+      [fieldName]: value,
     };
+
+    const readings = formData.current.kun.concat(formData.current.on).join(" ");
+
+    setIsValid(
+      validateKanji(formData.current.kanji) &&
+        readings.length !== 0 &&
+        validateReadings(readings)
+    );
+  };
 
   // 3040-309F : hiragana
   // 30A0-30FF : katakana
   // 4E00-9FAF : Common and uncommon kanji
   const handleSubmit = async () => {
+    if (!isValid) return;
+    const { kanji, on, kun, notes, dictionary } = formData.current;
+
     const newKanji = {
       id: kanji,
       kanji,
@@ -79,33 +107,21 @@ export function KanjiPageLayout({ mode }: { mode: Mode }) {
     };
     await addKanji(newKanji);
     autoAdd(newKanji);
-    if (router.canGoBack()) router.back();
-    else router.navigate("/");
+    router.navigate("(kanjis)");
   };
-
-  useEffect(() => {
-    if (mode === "create" || !kanjiId) return;
-    const kanjiById = getKanjiById(kanjiId as string);
-    const { kanji, readings, notes, dictionary } = kanjiById;
-    const form = {
-      kanji,
-      notes,
-      dictionary,
-      ...readings,
-    };
-    setFormData(form as FormData);
-  }, [mode, kanjiId]);
 
   useLayoutEffect(() => {
     const options = {
-      title: getModeTitle(mode, kanji),
+      title: getModeTitle(mode, formData.current.kanji),
       headerRight: () =>
-        mode === 'read' ? (
-          <Button onPress={() => router.push(`/${kanji}/edit`)} title="Edit" />
+        mode === "read" ? (
+          <Button
+            onPress={() => router.push(`/${formData.current.kanji}/edit`)}
+            title="Edit"
+          />
         ) : (
           <Button
             onPress={() => {
-              if (disabledButton) return;
               handleSubmit();
             }}
             title="Submit"
@@ -113,14 +129,17 @@ export function KanjiPageLayout({ mode }: { mode: Mode }) {
         ),
     };
     navigation.setOptions(options);
-  }, [kanji, mode, disabledButton]);
+  });
 
   return (
     <SafeAreaView>
       <ScrollView automaticallyAdjustKeyboardInsets>
         <Pressable onPress={Keyboard.dismiss} style={{ padding: 14 }}>
+          <Text style={{ color: "white" }}>
+            {isValid ? "I am valid!" : "I am not valid(("}
+          </Text>
           <KanjiInput
-            value={kanji}
+            initValue={formData.current.kanji}
             onInputChange={handleFieldInput("kanji")}
             readOnly={readOnly || mode === "edit"}
           />
@@ -131,20 +150,22 @@ export function KanjiPageLayout({ mode }: { mode: Mode }) {
                 gap: 14,
               }}
             >
-              {((kun.length > 0 && readOnly) || mode !== "read") && (
+              {((readOnly && formData.current.kun.length > 0) ||
+                mode !== "read") && (
                 <Card>
                   <ReadingInput
                     title="KUN"
-                    value={kun}
+                    initValue={formData.current.kun}
                     onInputChange={handleFieldInput("kun")}
                     readOnly={readOnly}
                   />
                 </Card>
               )}
-              {((on.length > 0 && readOnly) || mode !== "read") && (
+              {((readOnly && formData.current.on.length > 0) ||
+                mode !== "read") && (
                 <Card>
                   <ReadingInput
-                    value={on}
+                    initValue={formData.current.on}
                     title="ON"
                     onInputChange={handleFieldInput("on")}
                     readOnly={readOnly}
@@ -154,14 +175,14 @@ export function KanjiPageLayout({ mode }: { mode: Mode }) {
             </View>
             <DictionaryField
               readOnly={readOnly}
-              kanji={kanji}
-              dictionary={dictionary}
+              kanji={formData.current.kanji}
+              dictionary={formData.current.dictionary}
               onInputChange={handleFieldInput("dictionary")}
             />
-            {((notes && readOnly) || mode !== "read") && (
+            {((formData.current.notes && readOnly) || mode !== "read") && (
               <NotesInput
                 onInputChange={handleFieldInput("notes")}
-                value={notes}
+                value={formData.current.notes}
                 readOnly={readOnly}
               />
             )}
@@ -174,10 +195,10 @@ export function KanjiPageLayout({ mode }: { mode: Mode }) {
             style={[
               styles.submitButtonContainer,
               {
-                opacity: disabledButton ? 0.5 : 1,
+                opacity: !isValid ? 0.5 : 1,
               },
             ]}
-            disabled={disabledButton}
+            disabled={!isValid}
           >
             <Text style={styles.submitButtonText}>Submit</Text>
           </Pressable>

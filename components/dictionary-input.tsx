@@ -48,9 +48,11 @@ interface Props {
 }
 
 export const DictionaryInput: React.FC<Props> = ({ kanji, data, onUpdate }) => {
-  const [entries, setEntries] = useState<DictionaryEntriesById>(() =>
-    normalizeEntriesById([...data])
-  );
+  const [entries, setEntries] = useState<DictionaryEntriesById>({});
+
+  useEffect(() => {
+    setEntries(normalizeEntriesById(data));
+  }, [data]);
 
   const emptyEntry = {
     word: kanji,

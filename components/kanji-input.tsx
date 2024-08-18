@@ -1,51 +1,53 @@
-import {
-  View,
-  TextInput,
-  Text,
-} from "react-native";
+import { View, TextInput, Text } from "react-native";
 import { Card } from "./card";
 import { Extrapolation, interpolate } from "react-native-reanimated";
+import { useState } from "react";
 
-export const regexKanji = /[\u4E00-\u9FAF]$/g;
+export const regexKanji = /[\u4E00-\u9FAF]$/;
 
 export const validateKanji = (kanji: string) => {
-  if (kanji.length === 0) return true;
-  return regexKanji.test(kanji) || (regexKanji.test(kanji) && kanji.length === 1);
+  return regexKanji.test(kanji) && kanji.length === 1;
 };
 
-const renderInput = ({
-  error,
+const KanjiValueInput = ({
   onChangeText,
-  value,
+  initValue,
 }: {
-  error: boolean;
   onChangeText: (text: string) => void;
-  value: string;
-}) => (
-  <TextInput
-    style={{
-      verticalAlign: "bottom",
-      height: 58,
-      width: 80,
-      fontWeight: "500",
-      fontSize: interpolate(
-        value.length,
-        [1, 2, 3],
-        [42, 32, 24],
-        Extrapolation.CLAMP
-      ),
-      textAlign: "center",
-      paddingVertical: 8,
-      marginBottom: 8,
-      color: "whitesmoke",
-      borderBottomWidth: 1,
-      borderBottomColor: error ? "red" : "#404040",
-    }}
-    placeholder="心"
-    onChangeText={onChangeText}
-    value={value}
-  />
-);
+  initValue: string;
+}) => {
+  const [value, setValue] = useState(initValue);
+  const handleChangeText = (newText: string) => {
+    setValue(newText);
+    onChangeText(newText);
+  };
+
+  return (
+    <TextInput
+      style={{
+        verticalAlign: "bottom",
+        height: 58,
+        width: 80,
+        fontWeight: "500",
+        fontSize: interpolate(
+          value.length,
+          [1, 2, 3],
+          [42, 32, 24],
+          Extrapolation.CLAMP
+        ),
+        textAlign: "center",
+        paddingVertical: 8,
+        marginBottom: 8,
+        color: "whitesmoke",
+        borderBottomWidth: 1,
+        borderBottomColor: "#404040",
+      }}
+      placeholder="心"
+      onChangeText={handleChangeText}
+      value={value}
+    />
+  );
+};
 
 const renderText = (text: string) => (
   <Text
@@ -66,16 +68,14 @@ const renderText = (text: string) => (
 );
 
 export function KanjiInput({
-  value,
+  initValue,
   onInputChange,
   readOnly = false,
 }: {
-  value: string;
+  initValue: string;
   onInputChange: (value: string) => void;
   readOnly?: boolean;
 }) {
-  const error = !validateKanji(value);
-
   const handleInputChange = (newValue: string) => {
     onInputChange(newValue);
   };
@@ -100,19 +100,15 @@ export function KanjiInput({
           borderRadius: 15,
         }}
       >
-        {readOnly
-          ? renderText(value)
-          : renderInput({
-              error,
-              value,
-              onChangeText: handleInputChange,
-            })}
+        {readOnly ? (
+          renderText(initValue)
+        ) : (
+          <KanjiValueInput
+            onChangeText={handleInputChange}
+            initValue={initValue}
+          />
+        )}
       </Card>
-      {error && (
-        <Text style={{ color: "red", textAlign: "center" }}>
-          Can only contain one kanji character
-        </Text>
-      )}
     </View>
   );
 }
