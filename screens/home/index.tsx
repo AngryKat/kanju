@@ -5,6 +5,7 @@ import {
   LayoutAnimation,
   Text,
   Button,
+  FlatList
 } from "react-native";
 
 import { KanjiCard } from "@/components/kanji-card";
@@ -18,18 +19,7 @@ import React, {
 import { getKanjis, removeKanjiById } from "@/utils/kanji-async-storage";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import type { Kanji } from "@/utils/types";
-import Animated from "react-native-reanimated";
 import { useSearchBar } from "@/hooks/use-search-bar";
-
-const renderListItem = (
-  item: Kanji | ReactNode,
-  onRemove: (id: string) => void
-) => {
-  if (React.isValidElement(item) && item.key === "add-card") {
-    return item;
-  }
-  return <KanjiCard kanji={item as Kanji} onRemove={onRemove} />;
-};
 
 export function KanjiListScreen() {
   const navigation = useNavigation();
@@ -72,7 +62,7 @@ export function KanjiListScreen() {
 
   return (
     <SafeAreaView>
-      <Animated.FlatList
+      <FlatList
         numColumns={3}
         columnWrapperStyle={{
           gap: 8,

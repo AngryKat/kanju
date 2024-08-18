@@ -15,19 +15,16 @@ export default function DictionaryPage() {
     "reading",
     "meaning",
   ]);
-  const getAllDictionaryEntries = useCallback(() => {
-    try {
-      const data = getDictionaryEntries();
-      setDictionaryEntries(data);
-    } catch (e) {
-      console.error(e);
-    }
-  }, []);
 
   useFocusEffect(
     useCallback(() => {
-      getAllDictionaryEntries();
-    }, [getAllDictionaryEntries])
+      try {
+        const data = getDictionaryEntries();
+        setDictionaryEntries(data);
+      } catch (e) {
+        console.error(e);
+      }
+    }, [])
   );
 
   return (

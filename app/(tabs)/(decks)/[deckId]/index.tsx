@@ -45,7 +45,7 @@ export default function DeckByIdPage() {
         <Button title="Edit" onPress={() => router.push(`/${deckId}/edit`)} />
       ),
     });
-  }, [navigation, deck]);
+  }, [navigation, deck, deckId]);
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView

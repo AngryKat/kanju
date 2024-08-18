@@ -35,6 +35,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="dictionary"
         options={{
+          headerShown: false,
           title: "Dictionary",
           tabBarIcon: ({ color }) => (
             <FontAwesome size={20} name="book" color={color} />
