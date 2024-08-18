@@ -1,4 +1,5 @@
 import { Card } from "@/components/card";
+import { DeckCard } from "@/components/deck-card";
 import { DeckKanjiCard } from "@/components/deck-kanji-card";
 import {
   getDeckKanjis,
@@ -152,7 +153,7 @@ export default function DecksPage() {
   );
 
   const clickDeckHandler = (id: string) => {
-    router.push(`decks/${id}`);
+    router.push(`(decks)/${id}`);
   };
 
   const removeDeckHandler = async (id: string) => {
@@ -184,20 +185,10 @@ export default function DecksPage() {
                   marginHorizontal: 14,
                 }}
               >
-                <Card style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text style={{ color: "whitesmoke" }}>{deck.title}</Text>
-                  <Pressable
-                    style={{
-                      marginLeft: "auto",
-                      backgroundColor: "#eb9234",
-                      borderRadius: 50,
-                      padding: 5,
-                    }}
-                    onPress={() => clickDeckHandler(deck.id)}
-                  >
-                    <Ionicons name="chevron-forward" size={18} color="white" />
-                  </Pressable>
-                </Card>
+                <DeckCard
+                  title={deck.title}
+                  onPress={() => clickDeckHandler(deck.id)}
+                />
               </Animated.View>
             </Swipeable>
           ))}

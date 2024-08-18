@@ -10,7 +10,11 @@ export default function DictionaryPage() {
   const [dictionaryEntries, setDictionaryEntries] = useState<DictionaryEntry[]>(
     []
   );
-  const searchedEntries = useSearchBar(dictionaryEntries, ["word", "reading", "meaning"]);
+  const searchedEntries = useSearchBar(dictionaryEntries, [
+    "word",
+    "reading",
+    "meaning",
+  ]);
   const getAllDictionaryEntries = useCallback(() => {
     try {
       const data = getDictionaryEntries();
@@ -34,9 +38,7 @@ export default function DictionaryPage() {
           paddingHorizontal: 10,
         }}
         data={searchedEntries}
-        renderItem={({ item }) => (
-          <DictionaryEntryRead key={item.id} entry={item} />
-        )}
+        renderItem={({ item }) => <DictionaryEntryRead entry={item} />}
       />
     </SafeAreaView>
   );

@@ -22,9 +22,9 @@ export default function SelectDeckKanjisPage() {
   const navigation = useNavigation();
   const { title } = useLocalSearchParams();
   const [kanjis, setKanjis] = useState<Kanji[]>([]);
-  const [checkedKanjis, setCheckedKanjis] = useState<
-    Map<string, string>
-  >(new Map());
+  const [checkedKanjis, setCheckedKanjis] = useState<Map<string, string>>(
+    new Map()
+  );
   const filteredKanjis = useSearchBar(kanjis, [
     "kanji",
     "readings.on",
@@ -37,7 +37,7 @@ export default function SelectDeckKanjisPage() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerTitle: `Select kanjis for the deck ${title}`,
+      headerTitle: `Kanjis for the deck ${title}`,
     });
   });
 
@@ -57,10 +57,6 @@ export default function SelectDeckKanjisPage() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ paddingBottom: 10, flex: 0.7 }}>
-        <Button
-          title="Deselect all"
-          onPress={() => setCheckedKanjis(new Map([]))}
-        />
         <FlatList
           contentContainerStyle={{
             gap: 8,
@@ -78,27 +74,35 @@ export default function SelectDeckKanjisPage() {
         />
       </View>
       <View
-        style={{ flex: 0.3, margin: 10, padding: 10, marginTop: 0, gap: 16 }}
+        style={{
+          flex: 0.3,
+          margin: 10,
+          padding: 10,
+          marginTop: 0,
+          paddingTop: 0,
+        }}
       >
-        <View>
-          <Card
-            style={{
-              marginTop: 10,
-            }}
-          >
-            <TextInput
-              style={{ color: "whitesmoke", fontSize: 16, height: 40 }}
-              value={[...checkedKanjis.values()].join(" ")}
-              readOnly
-              multiline
-            />
-          </Card>
+        <View style={{ marginLeft: "auto" }}>
+          <Button
+            title="Clear selection"
+            onPress={() => setCheckedKanjis(new Map([]))}
+          />
         </View>
+
+        <Card>
+          <TextInput
+            style={{ color: "whitesmoke", fontSize: 16, height: 40 }}
+            value={[...checkedKanjis.values()].join(" ")}
+            readOnly
+            multiline
+          />
+        </Card>
         <Pressable
           style={{
             backgroundColor: "#eb9234",
             padding: 14,
             borderRadius: 12,
+            marginTop: 10,
           }}
           onPress={async () => {
             const newDeck = {
@@ -107,7 +111,7 @@ export default function SelectDeckKanjisPage() {
               kanjiIds: [...checkedKanjis.keys()],
             };
             await addDeck(newDeck);
-            router.navigate("decks");
+            router.navigate("(decks)");
           }}
         >
           <Text

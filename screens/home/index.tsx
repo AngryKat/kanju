@@ -34,7 +34,11 @@ const renderListItem = (
 export function KanjiListScreen() {
   const navigation = useNavigation();
   const [kanjiList, setKanjiList] = useState<Kanji[]>([]);
-  const searchedKanjis = useSearchBar(kanjiList, ["kanji", "readings.kun", "readings.on"])
+  const searchedKanjis = useSearchBar(kanjiList, [
+    "kanji",
+    "readings.kun",
+    "readings.on",
+  ]);
   const getAllKanjis = useCallback(() => {
     try {
       const data = getKanjis();
@@ -69,19 +73,23 @@ export function KanjiListScreen() {
   return (
     <SafeAreaView>
       <Animated.FlatList
+        numColumns={3}
+        columnWrapperStyle={{
+          gap: 8,
+        }}
         contentContainerStyle={{
           gap: 8,
           flexGrow: 1,
           padding: 14,
-          flexDirection: "row",
-          flexWrap: "wrap",
         }}
-        ListFooterComponent={() => <AddCard key="add-card" />}
-        data={[...searchedKanjis]}
-        renderItem={({ item }) => (
-          <KanjiCard kanji={item as Kanji} onRemove={handleRemove} />
-        )}
-        keyExtractor={(item) => (item as Kanji).id ?? "add-card"}
+        data={[...searchedKanjis, <AddCard key="add-card" />]}
+        renderItem={({ item }) =>
+          React.isValidElement(item) ? (
+            item
+          ) : (
+            <KanjiCard kanji={item as Kanji} onRemove={handleRemove} />
+          )
+        }
       />
     </SafeAreaView>
   );
