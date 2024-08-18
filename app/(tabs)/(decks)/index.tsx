@@ -1,16 +1,17 @@
-import { Card } from "@/components/card";
 import { DeckCard } from "@/components/deck-card";
-import { DeckKanjiCard } from "@/components/deck-kanji-card";
 import {
-  getDeckKanjis,
   getDecks,
   removeDeck,
 } from "@/utils/decks-async-storage";
-import { getKanjiById } from "@/utils/kanji-async-storage";
-import { Deck, Kanji } from "@/utils/types";
+import { Deck } from "@/utils/types";
 import { Ionicons } from "@expo/vector-icons";
-import { router, useFocusEffect } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { router, useFocusEffect, useNavigation } from "expo-router";
+import {
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   ScrollView,
   SafeAreaView,
@@ -19,6 +20,7 @@ import {
   View,
   Animated,
   LayoutAnimation,
+  Button,
 } from "react-native";
 import { Swipeable } from "react-native-gesture-handler";
 // import Animated, {
@@ -51,7 +53,13 @@ const renderAddNewDeckCard = () => {
 };
 
 const renderRightActions =
-  (id: string, onRemove: (id: string) => void, onEdit: (id: string) => void) =>
+  (
+    id: string,
+    {
+      onRemove,
+      onEdit,
+    }: { onRemove: (id: string) => void; onEdit: (id: string) => void }
+  ) =>
   (progress: any, dragX: any) => {
     const opacityRightButton = dragX.interpolate({
       inputRange: [-100, 0],
@@ -138,7 +146,12 @@ const renderRightActions =
 //   );
 // };
 
+let currOpenedDeckId: string;
+let prevOpenedDeckId: string;
+
 export default function DecksPage() {
+  const navigation = useNavigation();
+  const swipeable = useRef<any>({});
   const [decks, setDecks] = useState<Deck[]>([]);
 
   const getDecksFromStorage = () => {
@@ -146,11 +159,29 @@ export default function DecksPage() {
     setDecks(storageDecks);
   };
 
+  const closeOpenedCard = () => {
+    swipeable.current?.[currOpenedDeckId]?.close();
+  };
+
   useFocusEffect(
     useCallback(() => {
       getDecksFromStorage();
     }, [])
   );
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          title="+1"
+          onPress={() => {
+            router.push("add-deck");
+            closeOpenedCard();
+          }}
+        />
+      ),
+    });
+  }, [router, navigation]);
 
   const clickDeckHandler = (id: string) => {
     router.push(`(decks)/${id}`);
@@ -160,6 +191,10 @@ export default function DecksPage() {
     await removeDeck(id);
     getDecksFromStorage();
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+  };
+  const editDeckHandler = async (id: string) => {
+    router.push(`/${id}/edit`);
+    closeOpenedCard();
   };
 
   return (
@@ -172,12 +207,19 @@ export default function DecksPage() {
         >
           {decks.map((deck) => (
             <Swipeable
+              onSwipeableWillOpen={() => {
+                if (prevOpenedDeckId !== deck.id) {
+                  swipeable.current?.[prevOpenedDeckId]?.close();
+                }
+                prevOpenedDeckId = deck.id;
+                currOpenedDeckId = deck.id;
+              }}
+              ref={(ref) => (swipeable.current[deck.id] = ref)}
               key={deck.id}
-              renderRightActions={renderRightActions(
-                deck.id,
-                removeDeckHandler,
-                removeDeckHandler
-              )}
+              renderRightActions={renderRightActions(deck.id, {
+                onRemove: removeDeckHandler,
+                onEdit: editDeckHandler,
+              })}
             >
               <Animated.View
                 style={{

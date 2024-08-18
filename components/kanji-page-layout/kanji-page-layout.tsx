@@ -135,9 +135,6 @@ export function KanjiPageLayout({ mode }: { mode: Mode }) {
     <SafeAreaView>
       <ScrollView automaticallyAdjustKeyboardInsets>
         <Pressable onPress={Keyboard.dismiss} style={{ padding: 14 }}>
-          <Text style={{ color: "white" }}>
-            {isValid ? "I am valid!" : "I am not valid(("}
-          </Text>
           <KanjiInput
             initValue={formData.current.kanji}
             onInputChange={handleFieldInput("kanji")}
