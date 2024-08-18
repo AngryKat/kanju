@@ -56,24 +56,6 @@ export default function RootLayout() {
               headerShown: false,
             }}
           />
-          <Stack.Screen
-            name="add-deck"
-            options={{
-              title: "",
-            }}
-          />
-          <Stack.Screen
-            name="decks/index"
-            options={{
-              title: "",
-            }}
-          />
-          <Stack.Screen
-            name="select-deck-kanjis"
-            options={{
-              title: "",
-            }}
-          />
           <Stack.Screen name="+not-found" />
         </Stack>
       </ThemeProvider>
