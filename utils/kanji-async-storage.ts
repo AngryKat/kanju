@@ -39,7 +39,7 @@ export async function removeKanjiById(kanjiId: string) {
   await AsyncStorage.setItem("kanjis", JSON.stringify(kanjis));
 }
 
-export function getKanjiById(kanjiId: string) {
+export function getKanjiById(kanjiId: string): Kanji | undefined {
   if (!kanjis) throw new Error("Kanjis are not initialized");
   return kanjis[kanjiId];
 }
@@ -50,6 +50,8 @@ export async function editKanji(
 ) {
   if (!kanjis) throw new Error("Kanjis are not initialized");
   const kanjiToEdit = getKanjiById(kanjiId);
+  if (kanjiToEdit === undefined)
+    throw new Error(`Kanji with id ${kanjiId} was not found`);
   const newKanji = { ...kanjiToEdit, ...newData };
   kanjis[kanjiId] = { ...newKanji };
   await AsyncStorage.setItem("kanjis", JSON.stringify(kanjis));
@@ -57,5 +59,5 @@ export async function editKanji(
 
 export function getKanjisIds() {
   if (!kanjis) throw new Error("Kanjis are not initialized");
-  return Object.keys(kanjis)
+  return Object.keys(kanjis);
 }

@@ -68,11 +68,11 @@ const renderText = (text: string) => (
 );
 
 export function KanjiInput({
-  initValue,
+  value,
   onInputChange,
   readOnly = false,
 }: {
-  initValue: string;
+  value: string;
   onInputChange: (value: string) => void;
   readOnly?: boolean;
 }) {
@@ -101,11 +101,11 @@ export function KanjiInput({
         }}
       >
         {readOnly ? (
-          renderText(initValue)
+          renderText(value)
         ) : (
           <KanjiValueInput
             onChangeText={handleInputChange}
-            initValue={initValue}
+            initValue={value}
           />
         )}
       </Card>

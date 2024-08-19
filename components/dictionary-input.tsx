@@ -100,26 +100,35 @@ export const DictionaryInput: React.FC<Props> = ({ kanji, data, onUpdate }) => {
   };
 
   const renderRightActions = (id: string) => (progress: any, dragX: any) => {
-    const scale = dragX.interpolate({
-      inputRange: [-80, 0],
-      outputRange: [1, 0.5],
+    const opacity = dragX.interpolate({
+      inputRange: [-65, 0],
+      outputRange: [1, 0],
       extrapolate: "clamp",
     });
     return (
-      <Pressable onPress={() => handleRemove(id)}>
-        <Animated.View
-          style={[
-            {
-              flex: 1,
-              justifyContent: "center",
-              transform: [{ scale }],
-              paddingBottom: 24,
-            },
-          ]}
+      <Animated.View
+        style={[
+          {
+            marginBottom: 10,
+            marginLeft: 8,
+            opacity,
+          },
+        ]}
+      >
+        <Pressable
+          onPress={() => handleRemove(id)}
+          style={{
+            flex: 1,
+            backgroundColor: "red",
+            padding: 14,
+            borderRadius: 15,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          <Ionicons name="trash-outline" size={32} color="#505050" />
-        </Animated.View>
-      </Pressable>
+          <Ionicons name="trash-outline" size={32} color="white" />
+        </Pressable>
+      </Animated.View>
     );
   };
 

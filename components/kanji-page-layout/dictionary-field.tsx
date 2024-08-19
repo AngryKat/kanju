@@ -7,7 +7,7 @@ interface Props {
   kanji: string;
   dictionary: DictionaryEntry[];
   onInputChange: (updatedData: DictionaryEntry[]) => void;
-  readOnly: boolean;
+  readOnly?: boolean;
 }
 export function DictionaryField({
   kanji,
@@ -15,34 +15,51 @@ export function DictionaryField({
   onInputChange,
   readOnly = false,
 }: Props) {
-  return (
-    <>
-      <Text
-        style={{
-          color: "whitesmoke",
-          textAlign: "center",
-          fontSize: 20,
-          fontWeight: 600,
-          marginBottom: 18,
-          marginTop: 24,
-        }}
-      >
-        Dictionary
-      </Text>
+  const dictionaryWithMeanings = dictionary.filter(
+    (dict) => dict.meaning !== ""
+  );
 
-      {/* <DictionaryInput
-        kanji={kanji}
-        data={dictionary}
-        onUpdate={onInputChange}
-      /> */}
-      {readOnly ? (
-        <DictionaryRead kanji={kanji} data={dictionary} />
-      ) : (
+  if (!readOnly) {
+    return (
+      <>
+        <Text
+          style={{
+            color: "whitesmoke",
+            textAlign: "center",
+            fontSize: 20,
+            fontWeight: 600,
+            marginBottom: 18,
+            marginTop: 24,
+          }}
+        >
+          Dictionary
+        </Text>
         <DictionaryInput
           kanji={kanji}
           data={dictionary}
           onUpdate={onInputChange}
         />
+      </>
+    );
+  }
+  return (
+    <>
+      {dictionaryWithMeanings.length > 0 && (
+        <>
+          <Text
+            style={{
+              color: "whitesmoke",
+              textAlign: "center",
+              fontSize: 20,
+              fontWeight: 600,
+              marginBottom: 18,
+              marginTop: 24,
+            }}
+          >
+            Dictionary
+          </Text>
+          <DictionaryRead kanji={kanji} data={dictionaryWithMeanings} />
+        </>
       )}
     </>
   );

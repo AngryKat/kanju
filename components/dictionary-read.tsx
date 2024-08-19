@@ -16,32 +16,24 @@ export const DictionaryRead: React.FC<DictionaryReadProps> = ({
   data,
   kanji,
 }) => {
-  const [kanjiLinks, setKanjiLinks] = useState<Kanji[] | []>([]);
+  const [kanjiLinks, setKanjiLinks] = useState<Kanji[]>([]);
   const withMeaning = useMemo(() => {
     return data.filter((entry) => entry.meaning.length > 0);
   }, [data]);
 
   useEffect(() => {
-    const filterKanjis = async () => {
-      const filtered = (
-        await Promise.all(
-          [...new Set(data.flatMap((entry) => entry.word.split("")))]
-            .filter(
-              (char) =>
-                char !== kanji &&
-                !/^[\u3040-\u309F\u30A0-\u30FF\s,;\u3000\u3001\u3002]+$/.test(
-                  char
-                )
-            )
-            .map((kanji) => {
-              return getKanjiById(kanji);
-            })
-        )
-      ).filter((k) => !!k);
-      setKanjiLinks(filtered);
-    };
-    filterKanjis();
-  }, [data]);
+    const filtered = [...new Set(data.flatMap((entry) => entry.word.split("")))]
+      .filter(
+        (char) =>
+          char !== kanji &&
+          !/^[\u3040-\u309F\u30A0-\u30FF\s,;\u3000\u3001\u3002]+$/.test(char)
+      )
+      .map((kanji) => {
+        return getKanjiById(kanji);
+      })
+      .filter((k) => !!k);
+    setKanjiLinks(filtered);
+  }, [data, kanji]);
 
   return (
     <ScrollView>

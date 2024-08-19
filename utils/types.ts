@@ -31,3 +31,11 @@ export interface Deck {
   kanjiIds: string[]
 }
 export type Mode = "read" | "create" | "edit";
+
+export interface FormData {
+  kanji: string;
+  on: string[];
+  kun: string[];
+  notes: string;
+  dictionary: DictionaryEntry[];
+}
