@@ -166,7 +166,7 @@ export default function DecksPage() {
   useFocusEffect(
     useCallback(() => {
       getDecksFromStorage();
-    }, [])
+    }, [getDecksFromStorage])
   );
 
   useLayoutEffect(() => {

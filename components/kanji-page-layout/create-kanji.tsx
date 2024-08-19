@@ -17,6 +17,7 @@ import {
 import { Card } from "../card";
 import { DictionaryField } from "./dictionary-field";
 import { NotesInput } from "../notes-input";
+import { DecksField } from "./decks-field";
 
 const DEFAULT_FORM_DATA: FormData = {
   kanji: "",
@@ -24,6 +25,7 @@ const DEFAULT_FORM_DATA: FormData = {
   kun: [],
   notes: "",
   dictionary: [],
+  decks: [],
 };
 
 export function CreateKanji() {
@@ -99,7 +101,6 @@ export function CreateKanji() {
                 onInputChange={handleFieldInput("kun")}
               />
             </Card>
-
             <Card>
               <ReadingInput
                 initValue={DEFAULT_FORM_DATA.on}
@@ -112,6 +113,10 @@ export function CreateKanji() {
             kanji={kanjiString}
             dictionary={DEFAULT_FORM_DATA.dictionary}
             onInputChange={handleFieldInput("dictionary")}
+          />
+          <DecksField
+            decks={DEFAULT_FORM_DATA.decks}
+            onInputChange={handleFieldInput("decks")}
           />
           <NotesInput
             onInputChange={handleFieldInput("notes")}

@@ -14,6 +14,7 @@ export interface Kanji {
   };
   notes: string;
   dictionary: DictionaryEntry[];
+  decks: string[]
 }
 
 export interface Setting<T> {
@@ -38,4 +39,5 @@ export interface FormData {
   kun: string[];
   notes: string;
   dictionary: DictionaryEntry[];
+  decks: string[];
 }
