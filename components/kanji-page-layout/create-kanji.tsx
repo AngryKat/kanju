@@ -18,6 +18,7 @@ import { Card } from "../card";
 import { DictionaryField } from "./dictionary-field";
 import { NotesInput } from "../notes-input";
 import { DecksField } from "./decks-field";
+import { addDeck, editDeck, getDecks } from "@/utils/decks-async-storage";
 
 const DEFAULT_FORM_DATA: FormData = {
   kanji: "",
@@ -36,7 +37,14 @@ export function CreateKanji() {
 
   const handleSubmit = async () => {
     if (!isValid) return;
-    const { kanji: formKanji, on, kun, notes, dictionary } = formData.current;
+    const {
+      kanji: formKanji,
+      on,
+      kun,
+      notes,
+      dictionary,
+      decks,
+    } = formData.current;
 
     const newKanji = {
       id: formKanji,
@@ -49,6 +57,14 @@ export function CreateKanji() {
       dictionary,
     };
     await addKanji(newKanji);
+
+    const storageDecksIds = getDecks().map(({ id }) => id);
+    decks.forEach(async (deck) => {
+      if (!storageDecksIds.includes(deck.id)) {
+        await addDeck(deck);
+      }
+      await editDeck(deck.id, { kanjiIds: [...deck.kanjiIds, formKanji] });
+    });
     autoAdd(newKanji);
     router.navigate("(kanjis)");
   };

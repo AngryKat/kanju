@@ -156,6 +156,7 @@ export default function DecksPage() {
 
   const getDecksFromStorage = () => {
     const storageDecks = getDecks();
+    console.log('LENGTH', storageDecks)
     setDecks(storageDecks);
   };
 

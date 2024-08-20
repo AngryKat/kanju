@@ -17,9 +17,13 @@ import {
 import { Card } from "../card";
 import { DictionaryField } from "./dictionary-field";
 import { NotesInput } from "../notes-input";
+import { DecksField } from "./decks-field";
+import { getKanjiDecks } from "@/utils/kanjis-decks-utils";
+import { addDeck, editDeck, getDecks } from "@/utils/decks-async-storage";
 
 export function EditKanji({ kanji }: { kanji: Kanji }) {
   const { kanji: initKanjiString, readings, notes, dictionary } = kanji;
+  const decks = getKanjiDecks(kanji.id);
   const [isValid, setIsValid] = useState(true);
   const navigation = useNavigation();
   const formData = useRef<FormData>({
@@ -27,11 +31,18 @@ export function EditKanji({ kanji }: { kanji: Kanji }) {
     notes,
     dictionary,
     ...readings,
-  });
+  } as FormData);
 
   const handleSubmit = async () => {
     if (!isValid) return;
-    const { kanji: formKanji, on, kun, notes, dictionary } = formData.current;
+    const {
+      kanji: formKanji,
+      on,
+      kun,
+      notes,
+      dictionary,
+      decks,
+    } = formData.current;
 
     const newKanji = {
       id: formKanji,
@@ -42,8 +53,15 @@ export function EditKanji({ kanji }: { kanji: Kanji }) {
       },
       notes,
       dictionary,
-    };
+    } as Kanji;
     await addKanji(newKanji);
+    const storageDecksIds = getDecks().map(({ id }) => id);
+    decks.forEach(async (deck) => {
+      if (!storageDecksIds.includes(deck.id)) {
+        await addDeck(deck);
+      }
+      await editDeck(deck.id, { kanjiIds: [...deck.kanjiIds, kanji.id] });
+    });
     autoAdd(newKanji);
     router.navigate("(kanjis)");
   };
@@ -110,6 +128,7 @@ export function EditKanji({ kanji }: { kanji: Kanji }) {
             dictionary={dictionary}
             onInputChange={handleFieldInput("dictionary")}
           />
+          <DecksField decks={decks} onInputChange={handleFieldInput("decks")} />
           <NotesInput onInputChange={handleFieldInput("notes")} value={""} />
         </View>
       </Pressable>

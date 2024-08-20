@@ -1,16 +1,13 @@
 import { Text } from "react-native";
 import { DecksInput } from "../decks-input";
+import type { Deck } from "@/utils/types";
 
 interface Props {
-  decks: string[];
-  onInputChange: (updatedData: string[]) => void;
+  decks: Deck[];
+  onInputChange: (updatedData: Deck[]) => void;
   readOnly?: boolean;
 }
-export function DecksField({
-  decks,
-  onInputChange,
-  readOnly = false,
-}: Props) {
+export function DecksField({ decks, onInputChange, readOnly = false }: Props) {
   if (!readOnly) {
     return (
       <>
@@ -26,10 +23,7 @@ export function DecksField({
         >
           Decks
         </Text>
-        <DecksInput
-          initDecks={decks}
-          onUpdate={onInputChange}
-        />
+        <DecksInput initDecks={decks} onUpdate={onInputChange} />
       </>
     );
   }

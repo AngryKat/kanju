@@ -12,12 +12,19 @@ import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { initKanjis } from "@/utils/kanji-async-storage";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { BottomNavbar } from "@/components/bottom-navbar";
 import { initSettings } from "@/utils/settings-async-storage";
 import { initDecks } from "@/utils/decks-async-storage";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+const init = async () => {
+  try {
+    await Promise.all([initKanjis(), initSettings(), initDecks()]);
+  } catch (e) {
+    console.error(e);
+  }
+};
+init();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -30,17 +37,6 @@ export default function RootLayout() {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
-
-  useEffect(() => {
-    const init = async () => {
-      try {
-        await Promise.all([initKanjis(), initSettings(), initDecks()]);
-      } catch (e) {
-        console.error(e);
-      }
-    };
-    init();
-  }, [initKanjis, initSettings, initDecks]);
 
   if (!loaded) {
     return null;
