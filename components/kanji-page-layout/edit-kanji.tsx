@@ -2,7 +2,7 @@ import type { FormData, Kanji } from "@/utils/types";
 import { useLayoutEffect, useRef, useState } from "react";
 import { KanjiInput, validateKanji } from "../kanji-input";
 import { ReadingInput, validateReadings } from "../reading-input";
-import { addKanji } from "@/utils/kanji-async-storage";
+import { addKanji, editKanji } from "@/utils/kanji-async-storage";
 import { autoAdd } from "./auto-add-util";
 import { router, useNavigation } from "expo-router";
 import {
@@ -18,11 +18,11 @@ import { Card } from "../card";
 import { DictionaryField } from "./dictionary-field";
 import { NotesInput } from "../notes-input";
 import { DecksField } from "./decks-field";
-import { getKanjiDecks } from "@/utils/kanjis-decks-utils";
+import { getKanjiDecks } from "@/utils/kanjis-decks-data-utils";
 import { addDeck, editDeck, getDecks } from "@/utils/decks-async-storage";
 
 export function EditKanji({ kanji }: { kanji: Kanji }) {
-  const { kanji: initKanjiString, readings, notes, dictionary } = kanji;
+  const { id, kanji: initKanjiString, readings, notes, dictionary } = kanji;
   const decks = getKanjiDecks(kanji.id);
   const [isValid, setIsValid] = useState(true);
   const navigation = useNavigation();
@@ -35,18 +35,9 @@ export function EditKanji({ kanji }: { kanji: Kanji }) {
 
   const handleSubmit = async () => {
     if (!isValid) return;
-    const {
-      kanji: formKanji,
-      on,
-      kun,
-      notes,
-      dictionary,
-      decks,
-    } = formData.current;
+    const { on, kun, notes, dictionary, decks } = formData.current;
 
     const newKanji = {
-      id: formKanji,
-      kanji: formKanji,
       readings: {
         on,
         kun,
@@ -54,13 +45,24 @@ export function EditKanji({ kanji }: { kanji: Kanji }) {
       notes,
       dictionary,
     } as Kanji;
-    await addKanji(newKanji);
+    await editKanji(id, newKanji);
+    const removedDecks = getKanjiDecks(id).filter(
+      (deck) => !decks.find(({ id }) => deck.id !== id)
+    );
+    console.log("HELLO!!!", { decks, removedDecks });
     const storageDecksIds = getDecks().map(({ id }) => id);
     decks.forEach(async (deck) => {
-      if (!storageDecksIds.includes(deck.id)) {
-        await addDeck(deck);
-      }
-      await editDeck(deck.id, { kanjiIds: [...deck.kanjiIds, kanji.id] });
+      // if (!storageDecksIds.includes(deck.id)) {
+      //   await addDeck(deck);
+      // }
+      await editDeck(deck.id, {
+        kanjiIds: [...new Set([...deck.kanjiIds, kanji.id])],
+      });
+    });
+    removedDecks.forEach(async (deck) => {
+      await editDeck(deck.id, {
+        kanjiIds: deck.kanjiIds.filter((kanjiId) => kanjiId !== kanji.id),
+      });
     });
     autoAdd(newKanji);
     router.navigate("(kanjis)");

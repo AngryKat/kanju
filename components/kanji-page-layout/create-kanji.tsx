@@ -60,9 +60,9 @@ export function CreateKanji() {
 
     const storageDecksIds = getDecks().map(({ id }) => id);
     decks.forEach(async (deck) => {
-      if (!storageDecksIds.includes(deck.id)) {
-        await addDeck(deck);
-      }
+      // if (!storageDecksIds.includes(deck.id)) {
+      //   await addDeck(deck);
+      // }
       await editDeck(deck.id, { kanjiIds: [...deck.kanjiIds, formKanji] });
     });
     autoAdd(newKanji);

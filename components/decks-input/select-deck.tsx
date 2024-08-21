@@ -29,28 +29,29 @@ export function SelectDeck({ onSelect, selectedDecks }: Props) {
     }, [selectedDecks])
   );
 
-  useEffect(() => {
-    setCreateNewDeck(false);
-  }, []);
+  // useEffect(() => {
+  //   setCreateNewDeck(false);
+  // }, []);
 
   useEffect(() => {
-    if (filteredDecks.length > 0) setSelectedDeck(filteredDecks[0].id);
+    if (filteredDecks.length === 1) setSelectedDeck(filteredDecks[0].id);
   }, [filteredDecks]);
 
-  if (createNewDeck) {
-    return (
-      <CreateNewDeck
-        onCancel={() => setCreateNewDeck(false)}
-        onCreateNewDeck={(newDeck: Deck) => {
-          onSelect(newDeck);
-          setDecksList([newDeck]);
-          setCreateNewDeck(false);
-        }}
-      />
-    );
-  }
+  // if (createNewDeck) {
+  //   return (
+  //     <CreateNewDeck
+  //       onCancel={() => setCreateNewDeck(false)}
+  //       onCreateNewDeck={(newDeck: Deck) => {
+  //         onSelect(newDeck);
+  //         setDecksList([newDeck]);
+  //         setCreateNewDeck(false);
+  //       }}
+  //     />
+  //   );
+  // }
 
   const handleOnValueChange = (value: ItemValue) => {
+    console.log({ value })
     setSelectedDeck(value as string);
   };
 
@@ -84,6 +85,7 @@ export function SelectDeck({ onSelect, selectedDecks }: Props) {
           })}
         </PickerIOS>
       )}
+
       {visible ? (
         <Button
           title="Add this deck"
@@ -93,11 +95,11 @@ export function SelectDeck({ onSelect, selectedDecks }: Props) {
         />
       ) : (
         <View>
-          <Button
+          {/* <Button
             title="Create a new deck"
             onPress={() => setCreateNewDeck(true)}
-          />
-          <Button title="New deck +" onPress={() => setVisible(true)} />
+          /> */}
+          <Button title="Select deck" onPress={() => setVisible(true)} />
         </View>
       )}
     </>

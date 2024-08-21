@@ -6,10 +6,14 @@ import {
   View,
 } from "react-native";
 import { FlipCard } from "./flip-card";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import type { Kanji } from "@/utils/types";
 import { useEffect, useState } from "react";
 import { getKanjiById } from "@/utils/kanji-async-storage";
+import {
+  deleteKanji,
+  deleteKanjiFromDeck,
+} from "@/utils/kanjis-decks-data-utils";
 
 interface Readings {
   kun: string[];
@@ -34,7 +38,15 @@ const renderCardBack = (readings: Readings) => {
   );
 };
 
-export function DeckKanjiCard({ kanji }: { kanji: Kanji }) {
+export function DeckKanjiCard({
+  kanji,
+  onRemoveKanji,
+  onRemoveKanjiFromDeck,
+}: {
+  kanji: Kanji;
+  onRemoveKanji: (kanjiId: string) => void;
+  onRemoveKanjiFromDeck: (kanjiId: string) => void;
+}) {
   if (!kanji) {
     return (
       <FlipCard
@@ -70,22 +82,33 @@ export function DeckKanjiCard({ kanji }: { kanji: Kanji }) {
   const handleOnLongPress = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        options: ["Cancel", "Read more...", "Edit", "Remove"],
-        destructiveButtonIndex: 3,
+        options: [
+          "Cancel",
+          "Read more...",
+          "Edit",
+          "Remove",
+          "Remove from deck",
+        ],
+        destructiveButtonIndex: [3, 4],
         cancelButtonIndex: 0,
         userInterfaceStyle: "dark",
       },
       (buttonIndex) => {
         switch (buttonIndex) {
+          case 0:
+            break;
           case 1:
-            router.navigate(`/${kanji.id}`);
+            router.navigate(`(kanjis)/${kanji.id}`);
             break;
           case 2:
-            router.navigate(`/${kanji.id}/edit`);
+            router.navigate(`(kanjis)/${kanji.id}/edit`);
             break;
-          // case 3:
-          //   onRemove(kanji.id);
-          //   break;
+          case 3:
+            onRemoveKanji(kanji.id);
+            break;
+          case 4:
+            onRemoveKanjiFromDeck(kanji.id);
+            break;
           default:
             console.warn("No action provided for index ", buttonIndex);
         }

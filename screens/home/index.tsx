@@ -16,10 +16,11 @@ import React, {
   useLayoutEffect,
   useState,
 } from "react";
-import { getKanjis, removeKanjiById } from "@/utils/kanji-async-storage";
+import { getKanjis } from "@/utils/kanji-async-storage";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import type { Kanji } from "@/utils/types";
 import { useSearchBar } from "@/hooks/use-search-bar";
+import { deleteKanji } from "@/utils/kanjis-decks-data-utils";
 
 export function KanjiListScreen() {
   const navigation = useNavigation();
@@ -55,7 +56,7 @@ export function KanjiListScreen() {
     });
   }, [navigation, kanjiList]);
   const handleRemove = async (kanjiId: string) => {
-    await removeKanjiById(kanjiId);
+    await deleteKanji(kanjiId);
     getAllKanjis();
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
   };

@@ -10,7 +10,7 @@ const renderRightActions =
   (id: string, onRemove: (id: string) => void) =>
   (progress: any, dragX: any) => {
     const opacity = dragX.interpolate({
-      inputRange: [-50, 0],
+      inputRange: [-70, 0],
       outputRange: [1, 0],
       extrapolate: "clamp",
     });
@@ -18,7 +18,7 @@ const renderRightActions =
       <Animated.View
         style={[
           {
-            marginLeft: 4,
+            marginLeft: 8,
             opacity,
           },
         ]}
@@ -31,9 +31,10 @@ const renderRightActions =
             borderRadius: 15,
             alignItems: "center",
             justifyContent: "center",
+            backgroundColor: "red",
           }}
         >
-          <Ionicons name="trash-outline" size={18} color="red" />
+          <Text style={{ fontSize: 18, color: "whitesmoke" }}>Delete</Text>
         </Pressable>
       </Animated.View>
     );

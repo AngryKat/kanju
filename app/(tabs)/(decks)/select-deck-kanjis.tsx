@@ -16,6 +16,7 @@ import {
   View,
   TextInput,
   Button,
+  Keyboard,
 } from "react-native";
 
 export default function SelectDeckKanjisPage() {
@@ -25,6 +26,7 @@ export default function SelectDeckKanjisPage() {
   const [checkedKanjis, setCheckedKanjis] = useState<Map<string, string>>(
     new Map()
   );
+
   const filteredKanjis = useSearchBar(kanjis, [
     "kanji",
     "readings.on",
@@ -33,8 +35,15 @@ export default function SelectDeckKanjisPage() {
   const kanjisFromStorage = getKanjis();
   useEffect(() => {
     if (!kanjisFromStorage) return;
-    setKanjis(Object.values(kanjisFromStorage));
-  }, [kanjisFromStorage]);
+    setKanjis(
+      Object.values(kanjisFromStorage).sort((kanjiA, kanjiB) => {
+        if (checkedKanjis.has(kanjiA.id) && checkedKanjis.has(kanjiB.id))
+          return 0;
+        if (checkedKanjis.has(kanjiA.id)) return -1;
+        return 1;
+      })
+    );
+  }, [kanjisFromStorage, checkedKanjis]);
 
   useEffect(() => {
     if (!deckId) return;
@@ -82,7 +91,7 @@ export default function SelectDeckKanjisPage() {
     } else {
       await addDeck({ id: uuidv4() as string, ...newDeck });
     }
-    if (router.canDismiss()) router.dismiss()
+    if (router.canDismiss()) router.dismiss();
     router.replace("(decks)");
   };
   return (
@@ -104,7 +113,7 @@ export default function SelectDeckKanjisPage() {
           )}
         />
       </View>
-      <View
+      <Pressable
         style={{
           flex: 0.3,
           margin: 10,
@@ -145,10 +154,10 @@ export default function SelectDeckKanjisPage() {
               fontSize: 20,
             }}
           >
-            Create deck
+            Submit
           </Text>
         </Pressable>
-      </View>
+      </Pressable>
     </SafeAreaView>
   );
 }

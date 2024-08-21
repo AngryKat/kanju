@@ -41,7 +41,7 @@ export function DecksField({ decks, onInputChange, readOnly = false }: Props) {
               marginTop: 24,
             }}
           >
-            Dictionary
+            Decks
           </Text>
         </>
       )}
