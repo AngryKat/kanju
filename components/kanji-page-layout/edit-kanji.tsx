@@ -1,4 +1,4 @@
-import type { FormData, Kanji } from "@/utils/types";
+import type { Deck, FormData, Kanji } from "@/utils/types";
 import { useLayoutEffect, useRef, useState } from "react";
 import { KanjiInput, validateKanji } from "../kanji-input";
 import { ReadingInput, validateReadings } from "../reading-input";
@@ -21,9 +21,29 @@ import { DecksField } from "./decks-field";
 import { getKanjiDecks } from "@/utils/kanjis-decks-data-utils";
 import { addDeck, editDeck, getDecks } from "@/utils/decks-async-storage";
 
+const editDecks = ({ kanjiId, decks }: { kanjiId: string, decks: Deck[] }) => {
+  const removedDecks = getKanjiDecks(kanjiId).filter(
+    (deck) => !decks.find(({ id }) => deck.id !== id)
+  );
+  console.log("HELLO!!!", { decks, removedDecks });
+  const storageDecksIds = getDecks().map(({ id }) => id);
+  decks.forEach(async (deck) => {
+    // if (!storageDecksIds.includes(deck.id)) {
+    //   await addDeck(deck);
+    // }
+    await editDeck(deck.id, {
+      kanjiIds: [...new Set([...deck.kanjiIds, kanjiId])],
+    });
+  });
+  removedDecks.forEach(async (deck) => {
+    await editDeck(deck.id, {
+      kanjiIds: deck.kanjiIds.filter((id) => kanjiId !== id),
+    });
+  });
+}
+
 export function EditKanji({ kanji }: { kanji: Kanji }) {
   const { id, kanji: initKanjiString, readings, notes, dictionary } = kanji;
-  const decks = getKanjiDecks(kanji.id);
   const [isValid, setIsValid] = useState(true);
   const navigation = useNavigation();
   const formData = useRef<FormData>({
@@ -35,7 +55,7 @@ export function EditKanji({ kanji }: { kanji: Kanji }) {
 
   const handleSubmit = async () => {
     if (!isValid) return;
-    const { on, kun, notes, dictionary, decks } = formData.current;
+    const { on, kun, notes, dictionary } = formData.current;
 
     const newKanji = {
       readings: {
@@ -46,24 +66,7 @@ export function EditKanji({ kanji }: { kanji: Kanji }) {
       dictionary,
     } as Kanji;
     await editKanji(id, newKanji);
-    const removedDecks = getKanjiDecks(id).filter(
-      (deck) => !decks.find(({ id }) => deck.id !== id)
-    );
-    console.log("HELLO!!!", { decks, removedDecks });
-    const storageDecksIds = getDecks().map(({ id }) => id);
-    decks.forEach(async (deck) => {
-      // if (!storageDecksIds.includes(deck.id)) {
-      //   await addDeck(deck);
-      // }
-      await editDeck(deck.id, {
-        kanjiIds: [...new Set([...deck.kanjiIds, kanji.id])],
-      });
-    });
-    removedDecks.forEach(async (deck) => {
-      await editDeck(deck.id, {
-        kanjiIds: deck.kanjiIds.filter((kanjiId) => kanjiId !== kanji.id),
-      });
-    });
+    // editDecks()
     autoAdd(newKanji);
     router.navigate("(kanjis)");
   };
@@ -130,7 +133,7 @@ export function EditKanji({ kanji }: { kanji: Kanji }) {
             dictionary={dictionary}
             onInputChange={handleFieldInput("dictionary")}
           />
-          <DecksField decks={decks} onInputChange={handleFieldInput("decks")} />
+          {/* <DecksField decks={decks} onInputChange={handleFieldInput("decks")} /> */}
           <NotesInput onInputChange={handleFieldInput("notes")} value={""} />
         </View>
       </Pressable>

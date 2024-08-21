@@ -1,4 +1,4 @@
-import type { FormData } from "@/utils/types";
+import type { Deck, FormData } from "@/utils/types";
 import { useLayoutEffect, useRef, useState } from "react";
 import { KanjiInput, validateKanji } from "../kanji-input";
 import { ReadingInput, validateReadings } from "../reading-input";
@@ -19,6 +19,7 @@ import { DictionaryField } from "./dictionary-field";
 import { NotesInput } from "../notes-input";
 import { DecksField } from "./decks-field";
 import { addDeck, editDeck, getDecks } from "@/utils/decks-async-storage";
+import { getKanjiDecks } from "@/utils/kanjis-decks-data-utils";
 
 const DEFAULT_FORM_DATA: FormData = {
   kanji: "",
@@ -27,6 +28,27 @@ const DEFAULT_FORM_DATA: FormData = {
   notes: "",
   dictionary: [],
   decks: [],
+};
+
+const editDecks = ({ kanjiId, decks }: { kanjiId: string; decks: Deck[] }) => {
+  const removedDecks = getKanjiDecks(kanjiId).filter(
+    (deck) => !decks.find(({ id }) => deck.id !== id)
+  );
+  console.log("HELLO!!!", { decks, removedDecks });
+  const storageDecksIds = getDecks().map(({ id }) => id);
+  decks.forEach(async (deck) => {
+    // if (!storageDecksIds.includes(deck.id)) {
+    //   await addDeck(deck);
+    // }
+    await editDeck(deck.id, {
+      kanjiIds: [...new Set([...deck.kanjiIds, kanjiId])],
+    });
+  });
+  removedDecks.forEach(async (deck) => {
+    await editDeck(deck.id, {
+      kanjiIds: deck.kanjiIds.filter((id) => kanjiId !== id),
+    });
+  });
 };
 
 export function CreateKanji() {
@@ -43,7 +65,6 @@ export function CreateKanji() {
       kun,
       notes,
       dictionary,
-      decks,
     } = formData.current;
 
     const newKanji = {
@@ -58,13 +79,7 @@ export function CreateKanji() {
     };
     await addKanji(newKanji);
 
-    const storageDecksIds = getDecks().map(({ id }) => id);
-    decks.forEach(async (deck) => {
-      // if (!storageDecksIds.includes(deck.id)) {
-      //   await addDeck(deck);
-      // }
-      await editDeck(deck.id, { kanjiIds: [...deck.kanjiIds, formKanji] });
-    });
+    // editDecks()
     autoAdd(newKanji);
     router.navigate("(kanjis)");
   };
@@ -130,10 +145,10 @@ export function CreateKanji() {
             dictionary={DEFAULT_FORM_DATA.dictionary}
             onInputChange={handleFieldInput("dictionary")}
           />
-          <DecksField
+          {/* <DecksField
             decks={DEFAULT_FORM_DATA.decks}
             onInputChange={handleFieldInput("decks")}
-          />
+          /> */}
           <NotesInput
             onInputChange={handleFieldInput("notes")}
             value={DEFAULT_FORM_DATA.notes}
