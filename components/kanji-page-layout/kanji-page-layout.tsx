@@ -6,6 +6,7 @@ import { CreateKanji } from "./create-kanji";
 import { useLocalSearchParams } from "expo-router";
 import { getKanjiById } from "@/utils/kanji-async-storage";
 import { EditKanji } from "./edit-kanji";
+import { KanjiForm } from "../kanji-form";
 
 const formsByMode: Record<
   Mode,
@@ -13,7 +14,8 @@ const formsByMode: Record<
 > = {
   read: (props: any) => ReadKanji(props),
   edit: (props: any) => EditKanji(props),
-  create: CreateKanji,
+  create: KanjiForm,
+  // create: CreateKanji,
 };
 
 export function KanjiPageLayout({ mode }: { mode: Mode }) {
@@ -28,7 +30,7 @@ export function KanjiPageLayout({ mode }: { mode: Mode }) {
 
   return (
     <SafeAreaView>
-      {mode === "create" ? <CreateKanji /> : <Form kanji={kanjiById!} />}
+      {mode === "create" ? <KanjiForm /> : <Form kanji={kanjiById!} />}
     </SafeAreaView>
   );
 }

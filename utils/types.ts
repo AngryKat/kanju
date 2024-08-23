@@ -28,14 +28,14 @@ export interface Settings {
 export interface Deck {
   id: string;
   title: string;
-  kanjiIds: string[]
+  kanjiIds: string[];
 }
 export type Mode = "read" | "create" | "edit";
 
 export interface FormData {
   kanji: string;
-  on: string[];
-  kun: string[];
+  on: string;
+  kun: string;
   notes: string;
   dictionary: DictionaryEntry[];
   decks: Deck[];
