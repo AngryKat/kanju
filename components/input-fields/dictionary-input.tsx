@@ -40,7 +40,7 @@ const renderAddCard = (onPress: () => void, disabled: boolean) => (
 
 import React, { useEffect, useState } from "react";
 import { View, ScrollView, StyleSheet, TextInput } from "react-native";
-import { Card } from "./card";
+import { Card } from "../ui/card";
 import type { DictionaryEntry } from "@/utils/types";
 import { Ionicons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";

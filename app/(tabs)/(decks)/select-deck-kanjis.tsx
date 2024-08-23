@@ -1,4 +1,4 @@
-import { Card } from "@/components/card";
+import { Card } from "@/components/ui/card";
 import { SelectKanjiCard } from "@/components/select-kanji-card";
 import { useSearchBar } from "@/hooks/use-search-bar";
 import { addDeck, editDeck, getDeckKanjis } from "@/utils/decks-async-storage";

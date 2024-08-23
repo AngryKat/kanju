@@ -51,7 +51,6 @@ export function SelectDeck({ onSelect, selectedDecks }: Props) {
   // }
 
   const handleOnValueChange = (value: ItemValue) => {
-    console.log({ value })
     setSelectedDeck(value as string);
   };
 

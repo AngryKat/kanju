@@ -1,36 +1,43 @@
-import { SafeAreaView } from "react-native";
+import { Button, SafeAreaView } from "react-native";
 
-import { Kanji, type Mode } from "@/utils/types";
-import { ReadKanji } from "./read-kanji";
-import { CreateKanji } from "./create-kanji";
-import { useLocalSearchParams } from "expo-router";
+import type { Mode, FormData } from "@/utils/types";
+import { router, useLocalSearchParams } from "expo-router";
 import { getKanjiById } from "@/utils/kanji-async-storage";
-import { EditKanji } from "./edit-kanji";
-import { KanjiForm } from "../kanji-form";
-
-const formsByMode: Record<
-  Mode,
-  (props: { kanji: Kanji }) => React.JSX.Element
-> = {
-  read: (props: any) => ReadKanji(props),
-  edit: (props: any) => EditKanji(props),
-  create: KanjiForm,
-  // create: CreateKanji,
-};
+import { KanjiForm } from "./kanji-form";
+import { getKanjiDecks } from "@/utils/kanjis-decks-data-utils";
+import { KanjiPageContext } from "./kanji-page-context";
+import { useNavigation } from "expo-router";
+import { useLayoutEffect } from "react";
 
 export function KanjiPageLayout({ mode }: { mode: Mode }) {
+  const navigation = useNavigation();
   const { kanjiId } = useLocalSearchParams();
   const kanjiById = getKanjiById(kanjiId as string);
-  const Form = formsByMode[mode];
 
   if (mode !== "create" && !kanjiById) {
     console.error("Error!");
     return null;
   }
 
+  if (mode === "read" && !kanjiById) {
+    console.error("Error!");
+    return null;
+  }
+
+  const kanjiFormData = kanjiById
+    ? ({
+        ...kanjiById,
+        on: kanjiById?.readings.on.join("、"),
+        kun: kanjiById?.readings.kun.join("、"),
+        decks: getKanjiDecks(kanjiId as string),
+      } as FormData)
+    : null;
+
   return (
-    <SafeAreaView>
-      {mode === "create" ? <KanjiForm /> : <Form kanji={kanjiById!} />}
-    </SafeAreaView>
+    <KanjiPageContext.Provider value={{ mode }}>
+      <SafeAreaView>
+        <KanjiForm defaultValues={kanjiFormData} />
+      </SafeAreaView>
+    </KanjiPageContext.Provider>
   );
 }

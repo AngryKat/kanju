@@ -1,7 +1,7 @@
 import type { Deck } from "@/utils/types";
 import { useEffect, useState } from "react";
 import uuid from "react-native-uuid";
-import { Card } from "../card";
+import { Card } from "../ui/card";
 import { TextInput } from "react-native-gesture-handler";
 import { Button, View } from "react-native";
 

@@ -5,7 +5,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { FlipCard } from "./flip-card";
+import { FlipCard } from "./ui/flip-card";
 import { router, useLocalSearchParams } from "expo-router";
 import type { Kanji } from "@/utils/types";
 import { useEffect, useState } from "react";

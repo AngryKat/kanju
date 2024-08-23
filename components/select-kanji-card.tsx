@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { router } from "expo-router";
 import type { Kanji } from "@/utils/types";
-import { Card } from "./card";
+import { Card } from "./ui/card";
 
 export function SelectKanjiCard({
   kanji,

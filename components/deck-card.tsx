@@ -1,5 +1,5 @@
 import { Text, Pressable } from "react-native";
-import { Card } from "./card";
+import { Card } from "./ui/card";
 import { Ionicons } from "@expo/vector-icons";
 
 interface Props {

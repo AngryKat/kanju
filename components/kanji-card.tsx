@@ -1,5 +1,5 @@
 import { ActionSheetIOS, StyleSheet, Text, View } from "react-native";
-import { FlipCard } from "./flip-card";
+import { FlipCard } from "./ui/flip-card";
 import { router } from "expo-router";
 import type { Kanji } from "@/utils/types";
 

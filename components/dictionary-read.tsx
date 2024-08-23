@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { View, ScrollView, TextInput, Text } from "react-native";
-import { Card } from "./card";
+import { Card } from "./ui/card";
 import { DictionaryEntry, Kanji } from "@/utils/types";
 import { DictionaryEntryRead } from "./dictionary-entry-read";
 import { regexKanji } from "./kanji-input";

@@ -4,7 +4,7 @@ import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
 import type { Deck } from "@/utils/types";
-import { Card } from "../card";
+import { Card } from "../ui/card";
 
 const renderRightActions =
   (id: string, onRemove: (id: string) => void) =>
