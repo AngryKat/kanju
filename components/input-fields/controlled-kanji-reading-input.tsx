@@ -43,14 +43,14 @@ export function ControlledKanjiReadingInput({
                   fontSize: 14,
                   color: "whitesmoke",
 
-                  paddingBottom: 5,
+                  padding: 5,
                 },
                 !readOnly && {
                   borderBottomWidth: 1,
                   borderBottomColor: "#404040",
                 },
               ]}
-              readOnly
+              readOnly={readOnly}
             />
           )}
           rules={{
