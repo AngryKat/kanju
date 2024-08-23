@@ -47,9 +47,10 @@ export function KanjiForm({ defaultValues }: Props) {
   const handleSubmit = async (data: FormData) => {
     const { kanji, on, kun, notes, dictionary } = data;
     const readings = {
-      on: on?.split(/[\s,;\u3000\u3001\u3002]+/),
-      kun: kun?.split(/[\s,;\u3000\u3001\u3002]+/),
+      on: on !== "" ? on?.split(/[\s,;\u3000\u3001\u3002]+/) : [],
+      kun: kun !== "" ? kun?.split(/[\s,;\u3000\u3001\u3002]+/) : [],
     };
+
     const newKanji = {
       id: kanji,
       kanji,
@@ -110,7 +111,7 @@ export function KanjiForm({ defaultValues }: Props) {
               title="Delete"
               onPress={async () => {
                 await deleteKanji(kanjiId as string);
-                router.navigate('(kanjis)');
+                router.navigate("(kanjis)");
               }}
             />
           )}
