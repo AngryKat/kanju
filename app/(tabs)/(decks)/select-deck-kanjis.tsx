@@ -91,8 +91,7 @@ export default function SelectDeckKanjisPage() {
     } else {
       await addDeck({ id: uuidv4() as string, ...newDeck });
     }
-    if (router.canDismiss()) router.dismiss();
-    router.replace("(decks)");
+    router.navigate("(decks)");
   };
   return (
     <SafeAreaView style={{ flex: 1 }}>
