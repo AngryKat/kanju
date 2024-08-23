@@ -16,6 +16,7 @@ import { DictionaryFieldArray } from "../input-fields/dictionary-field-array";
 import { useKanjiPageContext } from "./kanji-page-context";
 import { useLayoutEffect } from "react";
 import { deleteKanji } from "@/utils/kanjis-decks-data-utils";
+import { readings_dividers_regex } from "@/constants/regex";
 
 const DEFAULT_FORM_DATA: FormData = {
   kanji: "",
@@ -47,8 +48,8 @@ export function KanjiForm({ defaultValues }: Props) {
   const handleSubmit = async (data: FormData) => {
     const { kanji, on, kun, notes, dictionary } = data;
     const readings = {
-      on: on !== "" ? on?.split(/[\s,;\u3000\u3001\u3002]+/) : [],
-      kun: kun !== "" ? kun?.split(/[\s,;\u3000\u3001\u3002]+/) : [],
+      on: on !== "" ? on?.split(readings_dividers_regex) : [],
+      kun: kun !== "" ? kun?.split(readings_dividers_regex) : [],
     };
 
     const newKanji = {
