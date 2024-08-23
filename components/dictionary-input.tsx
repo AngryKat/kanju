@@ -12,7 +12,7 @@ function normalizeEntriesById(data: DictionaryEntry[]) {
   }, {} as DictionaryEntriesById);
 }
 
-const renderAddCard = (onPress: () => void) => (
+const renderAddCard = (onPress: () => void, disabled: boolean) => (
   <Pressable onPress={onPress}>
     <View
       style={{
@@ -21,11 +21,15 @@ const renderAddCard = (onPress: () => void) => (
         gap: 8,
       }}
     >
-      <Ionicons name="add-circle-outline" size={20} color="#505050" />
+      <Ionicons
+        name="add-circle-outline"
+        size={20}
+        color={disabled ? "#505050" : "#eb9234"}
+      />
       <Text
         style={{
           fontSize: 18,
-          color: "#505050",
+          color: disabled ? "#505050" : "#eb9234",
         }}
       >
         Add word
@@ -40,6 +44,7 @@ import { Card } from "./card";
 import type { DictionaryEntry } from "@/utils/types";
 import { Ionicons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
+import { validateKanji } from "./kanji-input";
 
 interface Props {
   data: DictionaryEntry[];
@@ -178,7 +183,7 @@ export const DictionaryInput: React.FC<Props> = ({ kanji, data, onUpdate }) => {
             </Card>
           </Swipeable>
         ))}
-      {renderAddCard(handleAddDefault)}
+      {renderAddCard(handleAddDefault, !kanji || !validateKanji(kanji))}
     </ScrollView>
   );
 };
