@@ -2,6 +2,7 @@ import { Text, TextInput, View } from "react-native";
 import { Card } from "../ui/card";
 import { Controller, useFormState } from "react-hook-form";
 import { useKanjiPageContext } from "../kanji-page-layout/kanji-page-context";
+import { hiragana_katakana_regex } from "@/constants/regex";
 
 export function ControlledKanjiReadingInput({
   reading,
@@ -53,7 +54,7 @@ export function ControlledKanjiReadingInput({
             />
           )}
           rules={{
-            pattern: /^[\u3040-\u309F\u30A0-\u30FF\s,;\u3000\u3001\u3002]+$/,
+            pattern: hiragana_katakana_regex,
           }}
         />
       </Card>

@@ -1,13 +1,11 @@
 import { FormProvider, useForm } from "react-hook-form";
-import { ControlledTextInput } from "../input-fields/controlled-text-input";
-import type { FormData, Kanji, Mode } from "@/utils/types";
+import type { FormData, Mode } from "@/utils/types";
 import {
   Button,
   ScrollView,
   Text,
   Pressable,
   StyleSheet,
-  View,
   Keyboard,
 } from "react-native";
 import { ControlledKanjiInput } from "../input-fields/controlled-kanji-input";
@@ -17,6 +15,7 @@ import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { DictionaryFieldArray } from "../input-fields/dictionary-field-array";
 import { useKanjiPageContext } from "./kanji-page-context";
 import { useLayoutEffect } from "react";
+import { deleteKanji } from "@/utils/kanjis-decks-data-utils";
 
 const DEFAULT_FORM_DATA: FormData = {
   kanji: "",
@@ -104,6 +103,16 @@ export function KanjiForm({ defaultValues }: Props) {
             >
               <Text style={styles.submitButtonText}>Submit</Text>
             </Pressable>
+          )}
+          {mode === "edit" && (
+            <Button
+              color="red"
+              title="Delete"
+              onPress={async () => {
+                await deleteKanji(kanjiId as string);
+                router.navigate('(kanjis)');
+              }}
+            />
           )}
         </FormProvider>
       </Pressable>

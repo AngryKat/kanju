@@ -4,19 +4,17 @@ import {
   Text,
   TextInput,
   View,
-  ViewStyle,
-  type TextStyle,
 } from "react-native";
 import { Extrapolation, interpolate } from "react-native-reanimated";
 import { Card } from "../ui/card";
 import { ControlledTextInputHandleChange } from "./controlled-text-input";
 import { useKanjiPageContext } from "../kanji-page-layout/kanji-page-context";
-
+import { kanji_regex } from "@/constants/regex";
 
 const INPUT_VALIDATION_RULES = {
   minLength: 1,
   maxLength: 1,
-  pattern: /[\u4E00-\u9FAF]$/,
+  pattern: kanji_regex,
   required: true,
 };
 
@@ -25,7 +23,7 @@ export function ControlledKanjiInput() {
   const { errors } = useFormState();
   const { setValue } = useFormContext();
 
-  const readOnly = mode === "read";
+  const readOnly = mode === "read" || mode === "edit";
 
   const handleTextChange =
     (onChange: ControlledTextInputHandleChange) => (newValue: string) => {
