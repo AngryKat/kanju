@@ -68,13 +68,13 @@ export function KanjiForm({ defaultValues }: Props) {
       headerRight: () => (
         <Button
           title={mode === "read" ? "Edit" : "Submit"}
-          onPress={() => {
-            if (mode === "read") {
-              router.push(`(kanjis)/${kanjiId as string}/edit`);
-              return;
-            }
-            form.handleSubmit(handleSubmit);
-          }}
+          onPress={
+            mode === "read"
+              ? () => {
+                  router.push(`(kanjis)/${kanjiId as string}/edit`);
+                }
+              : form.handleSubmit(handleSubmit)
+          }
         />
       ),
     });
