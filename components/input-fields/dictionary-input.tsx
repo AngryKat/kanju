@@ -44,7 +44,7 @@ import { Card } from "../ui/card";
 import type { DictionaryEntry } from "@/utils/types";
 import { Ionicons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
-import { validateKanji } from "./kanji-input";
+import { kanji_regex } from "@/constants/regex";
 
 interface Props {
   data: DictionaryEntry[];
@@ -183,7 +183,7 @@ export const DictionaryInput: React.FC<Props> = ({ kanji, data, onUpdate }) => {
             </Card>
           </Swipeable>
         ))}
-      {renderAddCard(handleAddDefault, !kanji || !validateKanji(kanji))}
+      {renderAddCard(handleAddDefault, !kanji || !kanji_regex.test(kanji))}
     </ScrollView>
   );
 };

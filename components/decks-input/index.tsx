@@ -1,59 +1,53 @@
 import React, { useEffect, useState } from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView, StyleSheet, Button, TextInput } from "react-native";
 import { Deck } from "@/utils/types";
 import { SelectedDeckCard } from "./selected-deck-card";
 import { SelectDeck } from "./select-deck";
+import {
+  Controller,
+  FormProvider,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
+import { SelectedDecksList } from "./selected-decks-list";
+import { getDeck } from "@/utils/decks-async-storage";
 
-interface Props {
-  initDecks: Deck[];
-  onUpdate: (updatedData: Deck[]) => void;
-}
+export function DecksInput() {
+  const { fields, remove, append } = useFieldArray({
+    name: "decks",
+  });
 
-export const DecksInput: React.FC<Props> = ({ initDecks, onUpdate }) => {
-  const [selectedDecks, setSelectedDecks] = useState<Map<string, Deck>>(
-    new Map([])
-  );
-  useEffect(() => {
-    const normalized = new Map(initDecks.map((deck) => [deck.id, deck]));
-    setSelectedDecks(normalized);
-  }, [initDecks]);
-
-  const handleInputChange = (deck: Deck) => {
-    const updatedDecks = new Map(selectedDecks);
-    updatedDecks.set(deck.id, deck);
-    setSelectedDecks(updatedDecks);
-    onUpdate([...updatedDecks.values()]);
-  };
-
-  const handleRemove = (id: string) => {
-    const updatedDecks = new Map(selectedDecks);
-    updatedDecks.delete(id);
-    setSelectedDecks(updatedDecks);
-    onUpdate([...updatedDecks.values()]);
+  const handleOnSelectDeckAdd = (deckId: string) => {
+    const deck = getDeck(deckId);
+    if (!deck) {
+      console.error("Could not find deck with id ", deckId);
+      return;
+    }
+    append(deck);
   };
 
   return (
-    <ScrollView>
-      {selectedDecks.size !== 0 && (
-        <View style={{ gap: 10, marginBottom: 10 }}>
-          {[...selectedDecks.values()].map((deck) => {
+    <ScrollView
+      contentContainerStyle={{
+        marginHorizontal: 14,
+      }}
+    >
+      {fields.map((field, index) => (
+        <Controller
+          key={field.id}
+          name={`decks.${index}`}
+          render={({ field: { value } }) => {
+            console.log({ value });
             return (
-              <SelectedDeckCard
-                key={deck.id}
-                deck={deck}
-                onRemove={handleRemove}
-              />
+              <SelectedDeckCard deck={value} onRemove={() => remove(index)} />
             );
-          })}
-        </View>
-      )}
-      <SelectDeck
-        onSelect={handleInputChange}
-        selectedDecks={[...selectedDecks.keys()]}
-      />
+          }}
+        />
+      ))}
+      <SelectDeck onAdd={handleOnSelectDeckAdd} />
     </ScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   meaningTextInput: {

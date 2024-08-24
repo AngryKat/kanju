@@ -42,17 +42,6 @@ export function DictionaryFieldArray() {
           />
         );
       })}
-      {fields.length === 0 && (
-        <Text
-          style={{
-            fontSize: 20,
-            textAlign: "center",
-            color: "#505050",
-          }}
-        >
-          No entries
-        </Text>
-      )}
       {!readOnly && (
         <Pressable
           onPress={handleWordAdd}
@@ -74,7 +63,7 @@ export function DictionaryFieldArray() {
               color: disabled ? "#505050" : "#eb9234",
             }}
           >
-            Add
+            Add word
           </Text>
         </Pressable>
       )}

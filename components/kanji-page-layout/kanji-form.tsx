@@ -1,5 +1,5 @@
 import { FormProvider, useForm } from "react-hook-form";
-import type { FormData, Mode } from "@/utils/types";
+import type { Deck, FormData, Mode } from "@/utils/types";
 import {
   Button,
   ScrollView,
@@ -7,6 +7,7 @@ import {
   Pressable,
   StyleSheet,
   Keyboard,
+  View,
 } from "react-native";
 import { ControlledKanjiInput } from "../input-fields/controlled-kanji-input";
 import { ControlledKanjiReadingInput } from "../input-fields/controlled-kanji-reading-input";
@@ -17,6 +18,8 @@ import { useKanjiPageContext } from "./kanji-page-context";
 import { useLayoutEffect } from "react";
 import { deleteKanji } from "@/utils/kanjis-decks-data-utils";
 import { readings_dividers_regex } from "@/constants/regex";
+import { DecksInput } from "../decks-input";
+import { addKanjiToDeck, editDeck } from "@/utils/decks-async-storage";
 
 const DEFAULT_FORM_DATA: FormData = {
   kanji: "",
@@ -46,7 +49,7 @@ export function KanjiForm({ defaultValues }: Props) {
   });
 
   const handleSubmit = async (data: FormData) => {
-    const { kanji, on, kun, notes, dictionary } = data;
+    const { kanji, on, kun, decks, ...rest } = data;
     const readings = {
       on: on !== "" ? on?.split(readings_dividers_regex) : [],
       kun: kun !== "" ? kun?.split(readings_dividers_regex) : [],
@@ -55,11 +58,20 @@ export function KanjiForm({ defaultValues }: Props) {
     const newKanji = {
       id: kanji,
       kanji,
-      notes,
-      dictionary,
       readings,
+      ...rest,
     };
     await addKanji(newKanji);
+    decks.forEach(async (deck) => {
+      try {
+        await addKanjiToDeck(deck.id, kanji);
+      } catch (e) {
+        console.error(`Could not save kanji to the deck ${deck.title}`);
+        // form.setError("decks", {
+        //   message: `Could not save kanji to the deck ${deck.title}`,
+        // });
+      }
+    });
     router.navigate("(kanjis)");
   };
 
@@ -85,13 +97,21 @@ export function KanjiForm({ defaultValues }: Props) {
     <ScrollView automaticallyAdjustKeyboardInsets>
       <Pressable onPress={Keyboard.dismiss}>
         <FormProvider {...form}>
-          <Text style={styles.title}>Kanji</Text>
-          <ControlledKanjiInput />
-          <Text style={styles.title}>Readings</Text>
-          <ControlledKanjiReadingInput reading="kun" />
-          <ControlledKanjiReadingInput reading="on" />
-          <Text style={styles.title}>Dictionary</Text>
-          <DictionaryFieldArray />
+          <View
+            style={{
+              marginBottom: 18,
+            }}
+          >
+            <Text style={styles.title}>Kanji</Text>
+            <ControlledKanjiInput />
+            <Text style={styles.title}>Readings</Text>
+            <ControlledKanjiReadingInput reading="kun" />
+            <ControlledKanjiReadingInput reading="on" />
+            <Text style={styles.title}>Dictionary</Text>
+            <DictionaryFieldArray />
+            <Text style={styles.title}>Decks</Text>
+            <DecksInput />
+          </View>
           {mode !== "read" && (
             <Pressable
               onPress={form.handleSubmit(handleSubmit)}
@@ -106,6 +126,7 @@ export function KanjiForm({ defaultValues }: Props) {
               <Text style={styles.submitButtonText}>Submit</Text>
             </Pressable>
           )}
+
           {mode === "edit" && (
             <Button
               color="red"

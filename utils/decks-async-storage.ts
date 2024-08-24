@@ -53,3 +53,16 @@ export async function editDeck(
   };
   await AsyncStorage.setItem("decks", JSON.stringify(decks));
 }
+
+export async function addKanjiToDeck(deckId: string, kanjiId: string) {
+  if (!decks) throw new Error("Decks are not initialized");
+  const deck = getDeck(deckId);
+  if (!deck) {
+    throw new Error(`Could not find deck with id ${deckId}`);
+  }
+  if (deck.kanjiIds.includes(kanjiId)) {
+    console.warn(`Kanji with id ${kanjiId} is already in the deck ${deckId}`);
+    return;
+  }
+  await editDeck(deckId, { kanjiIds: [...deck.kanjiIds, kanjiId] });
+}
