@@ -5,7 +5,8 @@ import {
   LayoutAnimation,
   Text,
   Button,
-  FlatList
+  FlatList,
+  Pressable,
 } from "react-native";
 
 import { KanjiCard } from "@/components/kanji-card";
@@ -21,6 +22,7 @@ import { router, useFocusEffect, useNavigation } from "expo-router";
 import type { Kanji } from "@/utils/types";
 import { useSearchBar } from "@/hooks/use-search-bar";
 import { deleteKanji } from "@/utils/kanjis-decks-data-utils";
+import { Ionicons } from "@expo/vector-icons";
 
 export function KanjiListScreen() {
   const navigation = useNavigation();
@@ -47,6 +49,11 @@ export function KanjiListScreen() {
 
   useLayoutEffect(() => {
     navigation.setOptions({
+      headerLeft: () => (
+        <Pressable>
+          <Ionicons name="filter" color="#007FFF" />
+        </Pressable>
+      ),
       headerRight: () => (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text style={{ color: "white" }}>{kanjiList.length}</Text>
