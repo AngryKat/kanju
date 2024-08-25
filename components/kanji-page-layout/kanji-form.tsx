@@ -60,10 +60,10 @@ export function KanjiForm({ defaultValues }: Props) {
       await editKanji(kanjiId as string, newKanjiData);
     } else if (mode === "create") {
       const newKanji = {
+        ...rest,
         id: kanji,
         kanji,
         readings,
-        ...rest,
       };
 
       await addKanji(newKanji);
