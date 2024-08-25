@@ -1,21 +1,36 @@
-import React, { useEffect, useState } from "react";
-import { View, ScrollView, StyleSheet, Button, TextInput } from "react-native";
-import { Deck } from "@/utils/types";
+import React from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+} from "react-native";
 import { SelectedDeckCard } from "./selected-deck-card";
 import { SelectDeck } from "./select-deck";
 import {
   Controller,
-  FormProvider,
   useFieldArray,
-  useForm,
 } from "react-hook-form";
-import { SelectedDecksList } from "./selected-decks-list";
 import { getDeck } from "@/utils/decks-async-storage";
+import { useKanjiPageContext } from "../kanji-page-layout/kanji-page-context";
 
 export function DecksInput() {
+  const { mode } = useKanjiPageContext();
   const { fields, remove, append } = useFieldArray({
     name: "decks",
   });
+
+  if (mode === "read" && fields.length === 0) {
+    return (
+      <Text
+        style={{
+          color: "#a0a0a0",
+          textAlign: 'center',
+        }}
+      >
+        This kanji is not in any deck
+      </Text>
+    );
+  }
 
   const handleOnSelectDeckAdd = (deckId: string) => {
     const deck = getDeck(deckId);
@@ -44,7 +59,7 @@ export function DecksInput() {
           }}
         />
       ))}
-      <SelectDeck onAdd={handleOnSelectDeckAdd} />
+      {mode !== "read" && <SelectDeck onAdd={handleOnSelectDeckAdd} />}
     </ScrollView>
   );
 }

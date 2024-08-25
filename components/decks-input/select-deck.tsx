@@ -12,8 +12,7 @@ import { Card } from "../ui/card";
 import { Ionicons } from "@expo/vector-icons";
 
 interface Props {
-  onAdd: any;
-  // name: string;
+  onAdd: (id: string) => void;
 }
 
 export function SelectDeck({ onAdd }: Props) {
@@ -62,6 +61,7 @@ export function SelectDeck({ onAdd }: Props) {
           flexDirection: "row",
           alignItems: "center",
           gap: 8,
+          marginTop: 10,
         }}
       >
         <Ionicons name="add-circle-outline" size={20} color="#eb9234" />
