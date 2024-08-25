@@ -52,7 +52,6 @@ export function DecksInput() {
           key={field.id}
           name={`decks.${index}`}
           render={({ field: { value } }) => {
-            console.log({ value });
             return (
               <SelectedDeckCard deck={value} onRemove={() => remove(index)} />
             );

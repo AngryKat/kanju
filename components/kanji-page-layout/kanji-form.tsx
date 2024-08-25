@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { ControlledKanjiInput } from "../input-fields/controlled-kanji-input";
 import { ControlledKanjiReadingInput } from "../input-fields/controlled-kanji-reading-input";
-import { addKanji } from "@/utils/kanji-async-storage";
+import { addKanji, editKanji } from "@/utils/kanji-async-storage";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { DictionaryFieldArray } from "../input-fields/dictionary-field-array";
 import { useKanjiPageContext } from "./kanji-page-context";
@@ -51,27 +51,34 @@ export function KanjiForm({ defaultValues }: Props) {
   const handleSubmit = async (data: FormData) => {
     const { kanji, on, kun, decks, ...rest } = data;
     const readings = {
-      on: on !== "" ? on?.split(readings_dividers_regex) : [],
-      kun: kun !== "" ? kun?.split(readings_dividers_regex) : [],
+      on: on !== "" ? on.split(readings_dividers_regex) : [],
+      kun: kun !== "" ? kun.split(readings_dividers_regex) : [],
     };
 
-    const newKanji = {
-      id: kanji,
-      kanji,
-      readings,
-      ...rest,
-    };
-    await addKanji(newKanji);
-    decks.forEach(async (deck) => {
-      try {
-        await addKanjiToDeck(deck.id, kanji);
-      } catch (e) {
-        console.error(`Could not save kanji to the deck ${deck.title}`);
-        // form.setError("decks", {
-        //   message: `Could not save kanji to the deck ${deck.title}`,
-        // });
-      }
-    });
+    if (mode === "edit") {
+      console.log("NEW READINGS ", { ...readings });
+      const newKanjiData = {
+        ...rest,
+        readings,
+      };
+      await editKanji(kanjiId as string, newKanjiData);
+    } else if (mode === "create") {
+      const newKanji = {
+        id: kanji,
+        kanji,
+        readings,
+        ...rest,
+      };
+
+      await addKanji(newKanji);
+      decks.forEach(async (deck) => {
+        try {
+          await addKanjiToDeck(deck.id, kanji);
+        } catch (e) {
+          console.error(`Could not save kanji to the deck ${deck.title}`);
+        }
+      });
+    }
     router.navigate("(kanjis)");
   };
 
