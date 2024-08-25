@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { View, ScrollView, TextInput } from "react-native";
-import { Card } from "./card";
+import { Card } from "./ui/card";
 import { DictionaryEntry } from "@/utils/types";
 
 interface DictionaryReadProps {

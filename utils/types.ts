@@ -13,5 +13,30 @@ export interface Kanji {
     on: string[];
   };
   notes: string;
-  dictionary: DictionaryEntry[]
+  dictionary: DictionaryEntry[];
+}
+
+export interface Setting<T> {
+  title: string;
+  value: T;
+}
+
+export interface Settings {
+  autoDictionaryEntryAdd: Setting<boolean | undefined>;
+}
+
+export interface Deck {
+  id: string;
+  title: string;
+  kanjiIds: string[];
+}
+export type Mode = "read" | "create" | "edit";
+
+export interface FormData {
+  kanji: string;
+  on: string;
+  kun: string;
+  notes: string;
+  dictionary: DictionaryEntry[];
+  decks: Deck[];
 }

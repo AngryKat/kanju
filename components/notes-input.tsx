@@ -1,6 +1,14 @@
 import { TextInput, View } from "react-native";
 
-export function NotesInput({ onInputChange, value, readOnly = false }: { readOnly: boolean, onInputChange: (value: string) => void, value: string}) {
+export function NotesInput({
+  onInputChange,
+  value,
+  readOnly = false,
+}: {
+  readOnly?: boolean;
+  onInputChange: (value: string) => void;
+  value: string;
+}) {
   return (
     <View
       style={{

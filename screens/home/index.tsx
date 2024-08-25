@@ -1,14 +1,13 @@
 import {
   StyleSheet,
   View,
-  ScrollView,
   SafeAreaView,
   LayoutAnimation,
-  FlatList,
   Text,
+  Button,
+  FlatList
 } from "react-native";
 
-import { KanjiCard } from "@/components/kanji-card";
 import { AddCard } from "@/components/add-card";
 import React, {
   ReactNode,
@@ -16,12 +15,16 @@ import React, {
   useLayoutEffect,
   useState,
 } from "react";
-import { getKanjis, removeKanjiById } from "@/utils/kanji-async-storage";
+import { getKanjis } from "@/utils/kanji-async-storage";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import type { Kanji } from "@/utils/types";
-import Animated from "react-native-reanimated";
 import ContextMenu from "react-native-context-menu-view";
 import { KanjiPageMinimizedPreview } from "@/components/kanji-page-minimized-preview";
+
+import { useSearchBar } from "@/hooks/use-search-bar";
+import { deleteKanji } from "@/utils/kanjis-decks-data-utils";
+import { KanjiCard } from "@/components/kanji-card";
+
 
 const renderListItem = (
   item: Kanji | ReactNode,
@@ -63,11 +66,18 @@ const renderListItem = (
 export function KanjiListScreen() {
   const navigation = useNavigation();
   const [kanjiList, setKanjiList] = useState<Kanji[]>([]);
-  const getAllKanjis = useCallback(async () => {
-    setTimeout(async () => {
-      const data = await getKanjis();
+  const searchedKanjis = useSearchBar(kanjiList, [
+    "kanji",
+    "readings.kun",
+    "readings.on",
+  ]);
+  const getAllKanjis = useCallback(() => {
+    try {
+      const data = getKanjis();
       setKanjiList(Object.values(data));
-    }, 500);
+    } catch (e) {
+      console.error(e);
+    }
   }, []);
 
   useFocusEffect(
@@ -79,33 +89,39 @@ export function KanjiListScreen() {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Text style={{ color: "white" }}>{kanjiList.length}</Text>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text style={{ color: "white" }}>{kanjiList.length}</Text>
+          <Button title="+1" onPress={() => router.navigate("add-kanji")} />
+        </View>
       ),
     });
   }, [navigation, kanjiList]);
   const handleRemove = async (kanjiId: string) => {
-    await removeKanjiById(kanjiId);
+    await deleteKanji(kanjiId);
     getAllKanjis();
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
   };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-      }}
-    >
-      <Animated.FlatList
+    <SafeAreaView>
+      <FlatList
+        numColumns={3}
+        columnWrapperStyle={{
+          gap: 8,
+        }}
         contentContainerStyle={{
           gap: 8,
           flexGrow: 1,
           padding: 14,
-          flexDirection: "row",
-          flexWrap: "wrap",
         }}
-        data={[...kanjiList, <AddCard key="add-card" />]}
-        renderItem={({ item }) => renderListItem(item, handleRemove)}
-        keyExtractor={(item) => (item as Kanji).id ?? "add-card"}
+        data={[...searchedKanjis, <AddCard key="add-card" />]}
+        renderItem={({ item }) =>
+          React.isValidElement(item) ? (
+            item
+          ) : (
+            <KanjiCard kanji={item as Kanji} />
+          )
+        }
       />
     </SafeAreaView>
   );

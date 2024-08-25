@@ -49,7 +49,7 @@ export function FlipCard({
             width: 110,
             height: 110,
             backgroundColor: "#303030",
-            borderRadius: 20,
+            borderRadius: 15,
             alignItems: "center",
             justifyContent: "center",
             position: "absolute",

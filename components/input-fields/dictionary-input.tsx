@@ -12,7 +12,7 @@ function normalizeEntriesById(data: DictionaryEntry[]) {
   }, {} as DictionaryEntriesById);
 }
 
-const renderAddCard = (onPress: () => void) => (
+const renderAddCard = (onPress: () => void, disabled: boolean) => (
   <Pressable onPress={onPress}>
     <View
       style={{
@@ -21,11 +21,15 @@ const renderAddCard = (onPress: () => void) => (
         gap: 8,
       }}
     >
-      <Ionicons name="add-circle-outline" size={20} color="#505050" />
+      <Ionicons
+        name="add-circle-outline"
+        size={20}
+        color={disabled ? "#505050" : "#eb9234"}
+      />
       <Text
         style={{
           fontSize: 18,
-          color: "#505050",
+          color: disabled ? "#505050" : "#eb9234",
         }}
       >
         Add word
@@ -36,10 +40,11 @@ const renderAddCard = (onPress: () => void) => (
 
 import React, { useEffect, useState } from "react";
 import { View, ScrollView, StyleSheet, TextInput } from "react-native";
-import { Card } from "./card";
+import { Card } from "../ui/card";
 import type { DictionaryEntry } from "@/utils/types";
 import { Ionicons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
+import { validateKanji } from "./kanji-input";
 
 interface Props {
   data: DictionaryEntry[];
@@ -48,9 +53,11 @@ interface Props {
 }
 
 export const DictionaryInput: React.FC<Props> = ({ kanji, data, onUpdate }) => {
-  const [entries, setEntries] = useState<DictionaryEntriesById>(() =>
-    normalizeEntriesById([...data])
-  );
+  const [entries, setEntries] = useState<DictionaryEntriesById>({});
+
+  useEffect(() => {
+    setEntries(normalizeEntriesById(data));
+  }, [data]);
 
   const emptyEntry = {
     word: kanji,
@@ -87,6 +94,7 @@ export const DictionaryInput: React.FC<Props> = ({ kanji, data, onUpdate }) => {
   };
 
   const handleAddDefault = () => {
+    if (!kanji) return;
     const updatedEntries = { ...entries };
     const newEntry: DictionaryEntry = {
       id: uuid.v4() as string,
@@ -97,30 +105,35 @@ export const DictionaryInput: React.FC<Props> = ({ kanji, data, onUpdate }) => {
   };
 
   const renderRightActions = (id: string) => (progress: any, dragX: any) => {
-    const scale = dragX.interpolate({
-      inputRange: [-80, 0],
-      outputRange: [1, 0.5],
+    const opacity = dragX.interpolate({
+      inputRange: [-65, 0],
+      outputRange: [1, 0],
       extrapolate: "clamp",
     });
     return (
-      <Pressable onPress={() => handleRemove(id)}>
-        <Animated.View
-          style={[
-            {
-              flex: 1,
-              justifyContent: "center",
-              transform: [{ scale }],
-              paddingBottom: 24,
-            },
-          ]}
+      <Animated.View
+        style={[
+          {
+            marginBottom: 10,
+            marginLeft: 8,
+            opacity,
+          },
+        ]}
+      >
+        <Pressable
+          onPress={() => handleRemove(id)}
+          style={{
+            flex: 1,
+            backgroundColor: "red",
+            padding: 14,
+            borderRadius: 15,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          <Ionicons
-            name="trash-outline"
-            size={32}
-            color="#505050"
-          />
-        </Animated.View>
-      </Pressable>
+          <Ionicons name="trash-outline" size={32} color="white" />
+        </Pressable>
+      </Animated.View>
     );
   };
 
@@ -170,7 +183,7 @@ export const DictionaryInput: React.FC<Props> = ({ kanji, data, onUpdate }) => {
             </Card>
           </Swipeable>
         ))}
-      {renderAddCard(handleAddDefault)}
+      {renderAddCard(handleAddDefault, !kanji || !validateKanji(kanji))}
     </ScrollView>
   );
 };
