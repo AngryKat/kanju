@@ -61,7 +61,6 @@ export async function addKanjiToDeck(deckId: string, kanjiId: string) {
     throw new Error(`Could not find deck with id ${deckId}`);
   }
   if (deck.kanjiIds.includes(kanjiId)) {
-    console.warn(`Kanji with id ${kanjiId} is already in the deck ${deckId}`);
     return;
   }
   await editDeck(deckId, { kanjiIds: [...deck.kanjiIds, kanjiId] });

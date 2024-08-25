@@ -1,10 +1,12 @@
 import { Animated, Pressable, Text } from "react-native";
 
 import React from "react";
-import { Ionicons } from "@expo/vector-icons";
 import { Swipeable } from "react-native-gesture-handler";
 import type { Deck } from "@/utils/types";
 import { Card } from "../ui/card";
+import { DeckCard } from "../deck-card";
+import { useKanjiPageContext } from "../kanji-page-layout/kanji-page-context";
+import { router } from "expo-router";
 
 const renderRightActions =
   (id: string, onRemove: (id: string) => void) =>
@@ -47,11 +49,22 @@ export function SelectedDeckCard({
   deck: Deck;
   onRemove: (id: string) => void;
 }) {
+  const { mode } = useKanjiPageContext();
+
   return (
     <Swipeable renderRightActions={renderRightActions(deck.id, onRemove)}>
-      <Card>
-        <Text style={{ color: "whitesmoke", fontSize: 20 }}>{deck.title}</Text>
-      </Card>
+      {mode === "read" ? (
+        <DeckCard
+          title={deck.title}
+          onPress={() => router.navigate(`(decks)/${deck.id}`)}
+        />
+      ) : (
+        <Card>
+          <Text style={{ color: "whitesmoke", fontSize: 20 }}>
+            {deck.title}
+          </Text>
+        </Card>
+      )}
     </Swipeable>
   );
 }
