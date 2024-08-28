@@ -7,6 +7,7 @@ import {
 } from "./controlled-text-input";
 import { useWatch } from "react-hook-form";
 import { Swipeable } from "react-native-gesture-handler";
+import { KanjiLinksList } from "../kanji-links";
 
 const renderRightActions =
   (onRemove: () => void) => (progress: any, dragX: any) => {
@@ -64,52 +65,61 @@ export function ControlledDictionaryInput({ name, onRemove, readOnly }: Props) {
     };
   return (
     <Swipeable renderRightActions={renderRightActions(onRemove)}>
-      <Card
-        style={{
-          marginBottom: 10,
-          flexDirection: "row",
-          gap: 10,
-          marginHorizontal: 14,
-        }}
-      >
-        <View>
-          <ControlledTextInput
-            textInputProps={{
-              placeholder: "Reading",
-              style: [
-                styles.readingTextInput,
-                !readOnly && styles.inputBottomBorder,
-              ],
-              readOnly,
-            }}
-            name={`${name}.reading`}
-          />
-          <ControlledTextInput
-            textInputProps={{
-              style: [
-                styles.wordTextInput,
-                !readOnly && styles.inputBottomBorder,
-              ],
-              placeholder: kanji,
-              readOnly,
-            }}
-            name={`${name}.word`}
-            handleChange={handleWordChange}
-          />
+      <Card>
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 10,
+          }}
+        >
+          <View>
+            <ControlledTextInput
+              textInputProps={{
+                placeholder: "Reading",
+                style: [
+                  styles.readingTextInput,
+                  !readOnly && styles.inputBottomBorder,
+                ],
+                readOnly,
+              }}
+              name={`${name}.reading`}
+            />
+            <ControlledTextInput
+              textInputProps={{
+                style: [
+                  styles.wordTextInput,
+                  !readOnly && styles.inputBottomBorder,
+                ],
+                placeholder: kanji,
+                readOnly,
+              }}
+              name={`${name}.word`}
+              handleChange={handleWordChange}
+            />
+          </View>
+          <View style={{ flex: 1 }}>
+            <ControlledTextInput
+              textInputProps={{
+                style: [
+                  styles.meaningTextInput,
+                  styles[readOnly ? "verticalBorder" : "fullBorder"],
+                ],
+                placeholder: "Meaning...",
+                multiline: true,
+                readOnly,
+              }}
+              name={`${name}.meaning`}
+            />
+          </View>
         </View>
-        <View style={{ flex: 1 }}>
-          <ControlledTextInput
-            textInputProps={{
-              style: [
-                styles.meaningTextInput,
-                styles[readOnly ? "verticalBorder" : "fullBorder"],
-              ],
-              placeholder: "Meaning...",
-              multiline: true,
-              readOnly,
-            }}
-            name={`${name}.meaning`}
-          />
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: 'center'
+          }}
+        >
+          <Text style={{ color: "whitesmoke" }}>Kanjis mentioned:</Text>
+          <KanjiLinksList entryName={name} />
         </View>
       </Card>
     </Swipeable>
