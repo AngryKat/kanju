@@ -10,7 +10,9 @@ import { Swipeable } from "react-native-gesture-handler";
 import { KanjiLinksList } from "../kanji-links";
 
 const renderRightActions =
-  (onRemove: () => void) => (progress: any, dragX: any) => {
+  ({ onRemove, readOnly }: { onRemove: () => void; readOnly?: boolean }) =>
+  (progress: any, dragX: any) => {
+    if (readOnly) return;
     const opacity = dragX.interpolate({
       inputRange: [-65, 0],
       outputRange: [1, 0],
@@ -64,7 +66,7 @@ export function ControlledDictionaryInput({ name, onRemove, readOnly }: Props) {
       onChange(value);
     };
   return (
-    <Swipeable renderRightActions={renderRightActions(onRemove)}>
+    <Swipeable renderRightActions={renderRightActions({ onRemove, readOnly })}>
       <Card>
         <View
           style={{
@@ -112,15 +114,17 @@ export function ControlledDictionaryInput({ name, onRemove, readOnly }: Props) {
             />
           </View>
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: 'center'
-          }}
-        >
-          <Text style={{ color: "whitesmoke" }}>Kanjis mentioned:</Text>
-          <KanjiLinksList entryName={name} />
-        </View>
+        {readOnly && (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <Text style={{ color: "whitesmoke" }}>Kanjis mentioned:</Text>
+            <KanjiLinksList entryName={name} />
+          </View>
+        )}
       </Card>
     </Swipeable>
   );
