@@ -6,23 +6,52 @@ import {
   Text,
   Button,
   FlatList,
-  Pressable,
 } from "react-native";
 
 import { KanjiCard } from "@/components/kanji-card";
 import { AddCard } from "@/components/add-card";
-import React, {
-  ReactNode,
-  useCallback,
-  useLayoutEffect,
-  useState,
-} from "react";
-import { getKanjis } from "@/utils/kanji-async-storage";
+import {
+  ContextMenuButton,
+  OnPressMenuItemEvent,
+} from "react-native-ios-context-menu";
+import React, { useCallback, useLayoutEffect, useState } from "react";
+import { getKanjiById, getKanjis } from "@/utils/kanji-async-storage";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import type { Kanji } from "@/utils/types";
 import { useSearchBar } from "@/hooks/use-search-bar";
 import { deleteKanji } from "@/utils/kanjis-decks-data-utils";
 import { Ionicons } from "@expo/vector-icons";
+import { getDeck, getDecks } from "@/utils/decks-async-storage";
+
+const FilterByDeckButton = ({
+  onMenuItemPress,
+}: {
+  onMenuItemPress: OnPressMenuItemEvent;
+}) => {
+  const decks = getDecks();
+
+  if (decks.length === 0) return null;
+
+  const menuItems = [
+    { actionKey: "all", actionTitle: "All" },
+    ...decks.map((deck) => ({
+      actionKey: deck.id,
+      actionTitle: deck.title,
+    })),
+  ];
+
+  return (
+    <ContextMenuButton
+      onPressMenuItem={onMenuItemPress}
+      menuConfig={{
+        menuTitle: "Filter by deck",
+        menuItems,
+      }}
+    >
+      <Ionicons name="filter-sharp" color="#007FFF" size={16} />
+    </ContextMenuButton>
+  );
+};
 
 export function KanjiListScreen() {
   const navigation = useNavigation();
@@ -50,9 +79,21 @@ export function KanjiListScreen() {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <Pressable>
-          <Ionicons name="filter" color="#007FFF" />
-        </Pressable>
+        <FilterByDeckButton
+          onMenuItemPress={({ nativeEvent: { actionKey } }: any) => {
+            if (actionKey === "all") {
+              getAllKanjis();
+              return;
+            }
+            const deck = getDeck(actionKey);
+            setKanjiList((prev) => {
+              if (!deck) return prev;
+              return deck.kanjiIds
+                .map((id) => getKanjiById(id))
+                .filter((kanji) => !!kanji);
+            });
+          }}
+        />
       ),
       headerRight: () => (
         <View style={{ flexDirection: "row", alignItems: "center" }}>
