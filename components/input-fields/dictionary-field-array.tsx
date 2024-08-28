@@ -42,17 +42,6 @@ export function DictionaryFieldArray() {
           />
         );
       })}
-      {fields.length === 0 && (
-        <Text
-          style={{
-            fontSize: 20,
-            textAlign: "center",
-            color: "#505050",
-          }}
-        >
-          No entries
-        </Text>
-      )}
       {!readOnly && (
         <Pressable
           onPress={handleWordAdd}
@@ -60,7 +49,8 @@ export function DictionaryFieldArray() {
             flexDirection: "row",
             alignItems: "center",
             gap: 8,
-            marginHorizontal: 14,
+            marginHorizontal: 10,
+            marginTop: 10
           }}
         >
           <Ionicons
@@ -74,7 +64,7 @@ export function DictionaryFieldArray() {
               color: disabled ? "#505050" : "#eb9234",
             }}
           >
-            Add
+            Add a new word
           </Text>
         </Pressable>
       )}
