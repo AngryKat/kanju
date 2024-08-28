@@ -36,12 +36,13 @@ export default function SelectDeckKanjisPage() {
   useEffect(() => {
     if (!kanjisFromStorage) return;
     setKanjis(
-      Object.values(kanjisFromStorage).sort((kanjiA, kanjiB) => {
-        if (checkedKanjis.has(kanjiA.id) && checkedKanjis.has(kanjiB.id))
-          return 0;
-        if (checkedKanjis.has(kanjiA.id)) return -1;
-        return 1;
-      })
+      Object.values(kanjisFromStorage)
+      // .sort((kanjiA, kanjiB) => {
+      //   if (checkedKanjis.has(kanjiA.id) && checkedKanjis.has(kanjiB.id))
+      //     return 0;
+      //   if (checkedKanjis.has(kanjiA.id)) return -1;
+      //   return 1;
+      // })
     );
   }, [kanjisFromStorage, checkedKanjis]);
 
