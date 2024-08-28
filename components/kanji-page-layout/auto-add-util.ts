@@ -49,6 +49,10 @@ export const autoAdd = (kanji: Kanji) => {
     }
 
     kanjisFromStorage.forEach(async (kan) => {
+      if (!kan) {
+        console.warn("Undefined kanji in kanjisFromStorage");
+        return;
+      }
       const message = `The word ${entry.word} has kanji ${kan.kanji}. Do you want to add ${entry.word} as entry in ${kan.kanji} dictionary?`;
       // omit cases when autoDictionaryEntryAdd.value is undefined
       if (autoDictionaryEntryAdd.value === true) {
