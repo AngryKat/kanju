@@ -40,3 +40,8 @@ export interface FormData {
   dictionary: DictionaryEntry[];
   decks: Deck[];
 }
+
+export interface Readings {
+  kun: string[];
+  on: string[];
+}

@@ -1,24 +1,15 @@
 import {
-  ActionSheetIOS,
-  ActivityIndicator,
   StyleSheet,
   Text,
   View,
 } from "react-native";
 import { FlipCard } from "./ui/flip-card";
-import { router, useLocalSearchParams } from "expo-router";
-import type { Kanji } from "@/utils/types";
-import { useEffect, useState } from "react";
-import { getKanjiById } from "@/utils/kanji-async-storage";
-import {
-  deleteKanji,
-  deleteKanjiFromDeck,
-} from "@/utils/kanjis-decks-data-utils";
+import { router } from "expo-router";
+import type { Kanji, Readings } from "@/utils/types";
+import { ContextMenuView } from "react-native-ios-context-menu";
+import { KanjiCardPreview } from "./kanji-card-preview";
+import { DeckKanjiCardActions, KanjiCardActions } from "@/constants/enums";
 
-interface Readings {
-  kun: string[];
-  on: string[];
-}
 
 const renderCardBack = (readings: Readings) => {
   const { on, kun } = readings;
@@ -47,8 +38,61 @@ export function DeckKanjiCard({
   onRemoveKanji: (kanjiId: string) => void;
   onRemoveKanjiFromDeck: (kanjiId: string) => void;
 }) {
-  if (!kanji) {
-    return (
+  return (
+    <ContextMenuView
+      previewConfig={{
+        previewType: "CUSTOM",
+        previewSize: "STRETCH",
+        backgroundColor: "black",
+      }}
+      renderPreview={() => {
+        return <KanjiCardPreview kanji={kanji} />;
+      }}
+      menuConfig={{
+        menuTitle: "",
+        menuItems: [
+          {
+            actionKey: DeckKanjiCardActions.View,
+            actionTitle: "View",
+          },
+          {
+            actionKey: DeckKanjiCardActions.Edit,
+            actionTitle: "Edit",
+          },
+          {
+            actionKey: DeckKanjiCardActions.Remove,
+            actionTitle: "Remove",
+            menuAttributes: ["destructive"],
+          },
+          {
+            actionKey: DeckKanjiCardActions.RemoveFromDeck,
+            actionTitle: "Remove from the deck",
+            menuAttributes: ["destructive"],
+          },
+        ],
+      }}
+      onPressMenuItem={({ nativeEvent }) => {
+        switch (nativeEvent.actionKey) {
+          case DeckKanjiCardActions.View:
+            router.navigate(`(kanjis)/${kanji.id}`);
+            break;
+          case DeckKanjiCardActions.Edit:
+            router.navigate(`(kanjis)/${kanji.id}/edit`);
+            break;
+          case DeckKanjiCardActions.Remove:
+            onRemoveKanji(kanji.id);
+            break;
+          case DeckKanjiCardActions.RemoveFromDeck:
+            onRemoveKanjiFromDeck(kanji.id);
+            break;
+          default:
+            console.warn(
+              "No action provided for key ",
+              nativeEvent.actionKey
+            );
+        }
+      }}
+    >
       <FlipCard
         cardFront={
           <Text
@@ -59,7 +103,7 @@ export function DeckKanjiCard({
               textAlign: "center",
             }}
           >
-            <ActivityIndicator />
+            {kanji.kanji}
           </Text>
         }
         cardBack={
@@ -71,79 +115,11 @@ export function DeckKanjiCard({
               textAlign: "center",
             }}
           >
-            <ActivityIndicator />
+            {renderCardBack(kanji.readings)}
           </Text>
         }
-        onLongPress={() => {}}
       />
-    );
-  }
-
-  const handleOnLongPress = () => {
-    ActionSheetIOS.showActionSheetWithOptions(
-      {
-        options: [
-          "Cancel",
-          "Read more...",
-          "Edit",
-          "Remove",
-          "Remove from deck",
-        ],
-        destructiveButtonIndex: [3, 4],
-        cancelButtonIndex: 0,
-        userInterfaceStyle: "dark",
-      },
-      (buttonIndex) => {
-        switch (buttonIndex) {
-          case 0:
-            break;
-          case 1:
-            router.navigate(`(kanjis)/${kanji.id}`);
-            break;
-          case 2:
-            router.navigate(`(kanjis)/${kanji.id}/edit`);
-            break;
-          case 3:
-            onRemoveKanji(kanji.id);
-            break;
-          case 4:
-            onRemoveKanjiFromDeck(kanji.id);
-            break;
-          default:
-            console.warn("No action provided for index ", buttonIndex);
-        }
-      }
-    );
-  };
-
-  return (
-    <FlipCard
-      cardFront={
-        <Text
-          style={{
-            color: "whitesmoke",
-            fontWeight: "500",
-            fontSize: 42,
-            textAlign: "center",
-          }}
-        >
-          {kanji.kanji}
-        </Text>
-      }
-      cardBack={
-        <Text
-          style={{
-            color: "whitesmoke",
-            fontWeight: "500",
-            fontSize: 42,
-            textAlign: "center",
-          }}
-        >
-          {renderCardBack(kanji.readings)}
-        </Text>
-      }
-      onLongPress={handleOnLongPress}
-    />
+    </ContextMenuView>
   );
 }
 
