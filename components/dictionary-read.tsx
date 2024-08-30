@@ -50,7 +50,6 @@ export const DictionaryRead: React.FC<DictionaryReadProps> = ({
             paddingLeft: 8,
           }}
         >
-          <Text style={{ color: "whitesmoke" }}>Kanjis mentioned: </Text>
           {kanjiLinks.map((k) => (
             <Link
               push

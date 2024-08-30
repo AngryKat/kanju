@@ -1,8 +1,8 @@
 import { Text, TextInput, View } from "react-native";
 import { Card } from "../ui/card";
-import { Controller, useFormState } from "react-hook-form";
+import { Controller, useForm, useFormState, useWatch } from "react-hook-form";
 import { useKanjiPageContext } from "../kanji-page-layout/kanji-page-context";
-import { hiragana_katakana_regex } from "@/constants/regex";
+import { regex_hiragana_katakana } from "@/constants/regex";
 
 export function ControlledKanjiReadingInput({
   reading,
@@ -12,6 +12,11 @@ export function ControlledKanjiReadingInput({
   const { errors } = useFormState();
   const { mode } = useKanjiPageContext();
   const readOnly = mode === "read";
+  const on = useWatch({ name: "on" });
+  const kun = useWatch({ name: "kun" });
+  const visible = (readOnly && !!on) || (readOnly && !!kun) || !readOnly;
+
+  if (!visible) return null;
   return (
     <View>
       <Card
@@ -36,7 +41,9 @@ export function ControlledKanjiReadingInput({
           render={({ field: { onChange, ...rest } }) => (
             <TextInput
               {...rest}
-              onChangeText={onChange}
+              onChangeText={(text: string) => {
+                onChange(text);
+              }}
               style={[
                 {
                   flex: 1,
@@ -54,7 +61,10 @@ export function ControlledKanjiReadingInput({
             />
           )}
           rules={{
-            pattern: hiragana_katakana_regex,
+            pattern: regex_hiragana_katakana,
+            required:
+              (reading === "kun" && on.length === 0) ||
+              (reading === "on" && kun.length === 0),
           }}
         />
       </Card>

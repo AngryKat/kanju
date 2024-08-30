@@ -1,17 +1,9 @@
 import { DeckCard } from "@/components/deck-card";
-import {
-  getDecks,
-  removeDeck,
-} from "@/utils/decks-async-storage";
+import { getDecks, removeDeck } from "@/utils/decks-async-storage";
 import { Deck } from "@/utils/types";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useFocusEffect, useNavigation } from "expo-router";
-import {
-  useCallback,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import {
   ScrollView,
   SafeAreaView,
@@ -199,7 +191,7 @@ export default function DecksPage() {
 
   return (
     <>
-      <SafeAreaView>
+      <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
           contentContainerStyle={{
             paddingTop: 20,

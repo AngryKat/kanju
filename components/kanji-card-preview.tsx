@@ -2,12 +2,14 @@ import type { Kanji } from "@/utils/types";
 import { ScrollView, StyleSheet, Text, TextInput } from "react-native";
 import { Card } from "./ui/card";
 import { DictionaryEntryRead } from "./dictionary-entry-read";
+import { getDictionaryEntriesWithKanji } from "@/utils/dictionary-entry-async-storage";
 
 interface Props {
   kanji: Kanji;
 }
 
 export function KanjiCardPreview({ kanji }: Props) {
+  const dictionary = getDictionaryEntriesWithKanji(kanji.kanji);
   return (
     <ScrollView
       automaticallyAdjustKeyboardInsets
@@ -48,10 +50,8 @@ export function KanjiCardPreview({ kanji }: Props) {
           </Text>
         )}
       </Card>
-      {kanji.dictionary.length !== 0 && (
-        <Text style={styles.title}>Dictionary</Text>
-      )}
-      {kanji.dictionary.map((entry) => (
+      {dictionary.length !== 0 && <Text style={styles.title}>Dictionary</Text>}
+      {dictionary.map((entry) => (
         <DictionaryEntryRead key={entry.id} entry={entry} />
       ))}
     </ScrollView>

@@ -1,4 +1,4 @@
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, useWatch } from "react-hook-form";
 import type { FormData, Mode } from "@/utils/types";
 import {
   Button,
@@ -10,13 +10,15 @@ import {
 } from "react-native";
 import { ControlledKanjiInput } from "../input-fields/controlled-kanji-input";
 import { ControlledKanjiReadingInput } from "../input-fields/controlled-kanji-reading-input";
-import { addKanji, editKanji } from "@/utils/kanji-async-storage";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { DictionaryFieldArray } from "../input-fields/dictionary-field-array";
 import { useKanjiPageContext } from "./kanji-page-context";
 import { useLayoutEffect } from "react";
-import { deleteKanji } from "@/utils/kanjis-decks-data-utils";
-import { readings_dividers_regex } from "@/constants/regex";
+import {
+  createKanjiWithFormData,
+  deleteKanji,
+  editKanjiWithFormData,
+} from "@/utils/kanji-form-data-utils";
 
 const DEFAULT_FORM_DATA: FormData = {
   kanji: "",
@@ -44,31 +46,24 @@ export function KanjiForm({ defaultValues }: Props) {
     mode: "onChange",
     defaultValues: defaultValues ?? DEFAULT_FORM_DATA,
   });
+  // const on = useWatch({ name: "on" });
+  // const kun = useWatch({ name: "kun" });
+
+  const isValid =
+    form.formState.isValid; // && (on.length !== 0 || kun.length !== 0);
 
   const handleSubmit = async (data: FormData) => {
-    const { kanji, on, kun, ...rest } = data;
-    const readings = {
-      on: on !== "" ? on.split(readings_dividers_regex) : [],
-      kun: kun !== "" ? kun.split(readings_dividers_regex) : [],
-    };
-
-    if (mode === "edit") {
-      const newKanjiData = {
-        ...rest,
-        readings,
-      };
-      await editKanji(kanjiId as string, newKanjiData);
-    } else if (mode === "create") {
-      const newKanji = {
-        ...rest,
-        id: kanji,
-        kanji,
-        readings,
-      };
-
-      await addKanji(newKanji);
+    try {
+      if (mode === "edit") {
+        await editKanjiWithFormData(kanjiId as string, data);
+      } else {
+        await createKanjiWithFormData(data);
+      }
+    } catch (e) {
+      console.error("Error occurred ", e);
+    } finally {
+      router.navigate("(kanjis)");
     }
-    router.navigate("(kanjis)");
   };
 
   useLayoutEffect(() => {
@@ -106,10 +101,10 @@ export function KanjiForm({ defaultValues }: Props) {
               style={[
                 styles.submitButtonContainer,
                 {
-                  opacity: !form.formState.isValid ? 0.5 : 1,
+                  opacity: !isValid ? 0.5 : 1,
                 },
               ]}
-              disabled={!form.formState.isValid}
+              disabled={!isValid}
             >
               <Text style={styles.submitButtonText}>Submit</Text>
             </Pressable>

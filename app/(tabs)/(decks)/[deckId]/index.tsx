@@ -2,10 +2,8 @@ import { DeckKanjiCard } from "@/components/deck-kanji-card";
 import { useSearchBar } from "@/hooks/use-search-bar";
 import { getDeck } from "@/utils/decks-async-storage";
 import { getKanjiById } from "@/utils/kanji-async-storage";
-import {
-  deleteKanji,
-  deleteKanjiFromDeck,
-} from "@/utils/kanjis-decks-data-utils";
+import { deleteKanji } from "@/utils/kanji-form-data-utils";
+import { deleteKanjiFromDeck } from "@/utils/kanjis-decks-data-utils";
 import { Deck, Kanji } from "@/utils/types";
 import {
   router,
@@ -79,13 +77,13 @@ export default function DeckByIdPage() {
         <FlatList
           numColumns={3}
           columnWrapperStyle={{
-            gap: 10,
+            gap: 8,
           }}
           contentContainerStyle={{
-            gap: 10,
-            alignSelf: "baseline",
-            marginVertical: 10,
-            padding: 10,
+            gap: 8,
+            flexGrow: 1,
+            padding: 14,
+            paddingTop: 20,
           }}
           data={filteredKanjis}
           renderItem={({ item }) => (

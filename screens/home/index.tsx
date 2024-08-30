@@ -19,9 +19,9 @@ import { getKanjiById, getKanjis } from "@/utils/kanji-async-storage";
 import { router, useFocusEffect, useNavigation } from "expo-router";
 import type { Kanji } from "@/utils/types";
 import { useSearchBar } from "@/hooks/use-search-bar";
-import { deleteKanji } from "@/utils/kanjis-decks-data-utils";
 import { Ionicons } from "@expo/vector-icons";
 import { getDeck, getDecks } from "@/utils/decks-async-storage";
+import { deleteKanji } from "@/utils/kanji-form-data-utils";
 
 const FilterByDeckButton = ({
   onMenuItemPress,
@@ -120,6 +120,7 @@ export function KanjiListScreen() {
           gap: 8,
           flexGrow: 1,
           padding: 14,
+          paddingTop: 20,
         }}
         data={[...searchedKanjis, <AddCard key="add-card" />]}
         renderItem={({ item }) =>

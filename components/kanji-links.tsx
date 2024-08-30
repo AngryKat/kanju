@@ -31,8 +31,7 @@ export function KanjiLinksList({ entryName }: { entryName: string }) {
       style={{
         flexDirection: "row",
         alignItems: "center",
-        padding: 10,
-        paddingLeft: 18,
+        paddingLeft: 8,
       }}
     >
       {kanjiLinks.map((k) => (

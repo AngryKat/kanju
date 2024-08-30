@@ -4,9 +4,13 @@ import type { Deck } from "./types";
 let decks: Deck[];
 
 export async function initDecks() {
+  console.log('INIT DECKS')
+
   try {
     const storage = await AsyncStorage.getItem("decks");
     decks = JSON.parse(storage ?? "[]");
+    console.log('INIT DECKS SUCCESS')
+
   } catch (e) {
     console.error("Could not init decks. ", e);
   }

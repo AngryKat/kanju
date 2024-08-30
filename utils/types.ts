@@ -13,7 +13,6 @@ export interface Kanji {
     on: string[];
   };
   notes: string;
-  dictionary: DictionaryEntry[];
 }
 
 export interface Setting<T> {

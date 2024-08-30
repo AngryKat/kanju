@@ -1,15 +1,10 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { FlipCard } from "./ui/flip-card";
 import { router } from "expo-router";
 import type { Kanji, Readings } from "@/utils/types";
 import { ContextMenuView } from "react-native-ios-context-menu";
 import { KanjiCardPreview } from "./kanji-card-preview";
-import { DeckKanjiCardActions, KanjiCardActions } from "@/constants/enums";
-
+import { DeckKanjiCardActions } from "@/constants/enums";
 
 const renderCardBack = (readings: Readings) => {
   const { on, kun } = readings;
@@ -54,20 +49,23 @@ export function DeckKanjiCard({
           {
             actionKey: DeckKanjiCardActions.View,
             actionTitle: "View",
-          },
-          {
-            actionKey: DeckKanjiCardActions.Edit,
-            actionTitle: "Edit",
-          },
-          {
-            actionKey: DeckKanjiCardActions.Remove,
-            actionTitle: "Remove",
-            menuAttributes: ["destructive"],
+            icon: {
+              type: "IMAGE_SYSTEM",
+              imageValue: {
+                systemName: "eye",
+              },
+            },
           },
           {
             actionKey: DeckKanjiCardActions.RemoveFromDeck,
             actionTitle: "Remove from the deck",
             menuAttributes: ["destructive"],
+            icon: {
+              type: "IMAGE_SYSTEM",
+              imageValue: {
+                systemName: "rectangle.slash",
+              },
+            },
           },
         ],
       }}
@@ -76,20 +74,12 @@ export function DeckKanjiCard({
           case DeckKanjiCardActions.View:
             router.navigate(`(kanjis)/${kanji.id}`);
             break;
-          case DeckKanjiCardActions.Edit:
-            router.navigate(`(kanjis)/${kanji.id}/edit`);
-            break;
-          case DeckKanjiCardActions.Remove:
-            onRemoveKanji(kanji.id);
-            break;
+
           case DeckKanjiCardActions.RemoveFromDeck:
             onRemoveKanjiFromDeck(kanji.id);
             break;
           default:
-            console.warn(
-              "No action provided for key ",
-              nativeEvent.actionKey
-            );
+            console.warn("No action provided for key ", nativeEvent.actionKey);
         }
       }}
     >

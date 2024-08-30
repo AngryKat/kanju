@@ -19,6 +19,6 @@ export const KanjiCardActions = Enum({
 } as const);
 
 export const DeckKanjiCardActions = Enum({
-  ...KanjiCardActions,
+  View: "view",
   RemoveFromDeck: "remove-from-deck",
 } as const);

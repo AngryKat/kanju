@@ -48,15 +48,33 @@ export function KanjiCard({
           {
             actionKey: KanjiCardActions.View,
             actionTitle: "View",
+            icon: {
+              type: 'IMAGE_SYSTEM',
+              imageValue: {
+                systemName: 'eye',
+              },
+            }
           },
           {
             actionKey: KanjiCardActions.Edit,
             actionTitle: "Edit",
+            icon: {
+              type: 'IMAGE_SYSTEM',
+              imageValue: {
+                systemName: 'pencil',
+              },
+            }
           },
           {
             actionKey: KanjiCardActions.Remove,
             actionTitle: "Remove",
             menuAttributes: ["destructive"],
+            icon: {
+              type: 'IMAGE_SYSTEM',
+              imageValue: {
+                systemName: 'trash',
+              },
+            }
           },
         ],
       }}

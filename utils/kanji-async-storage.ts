@@ -1,27 +1,30 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { Kanji } from "./types";
 
+const DUMMY_KANJI: Kanji = {
+  id: "愚",
+  kanji: "愚",
+  readings: {
+    kun: ['おろ'],
+    on: ['グ']
+  },
+  notes: "",
+}
+
 let kanjis: Record<string, Kanji>;
 
 export async function initKanjis() {
+  console.log('INIT KANJIS')
   try {
     const storage = await AsyncStorage.getItem("kanjis");
     kanjis = JSON.parse(storage ?? "{}");
+    console.log('INIT KANJIS SUCCESS')
+    // kanjis[DUMMY_KANJI.id] = DUMMY_KANJI
+    // await AsyncStorage.setItem("kanjis", JSON.stringify(kanjis));
+
   } catch (e) {
     console.error("Could not init kanjis. ", e);
   }
-}
-
-export function getDictionaryEntries() {
-  if (!kanjis) throw new Error("Kanjis are not initialized");
-  const arrayUniqueByKey = [
-    ...new Map(
-      Object.values(kanjis)
-        .flatMap(({ dictionary }) => dictionary)
-        .map((item) => [item.id, item])
-    ).values(),
-  ];
-  return arrayUniqueByKey.filter((entry) => !!entry.meaning);
 }
 
 export function getKanjis() {

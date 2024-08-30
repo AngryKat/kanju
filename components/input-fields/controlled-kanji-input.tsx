@@ -9,12 +9,12 @@ import { Extrapolation, interpolate } from "react-native-reanimated";
 import { Card } from "../ui/card";
 import { ControlledTextInputHandleChange } from "./controlled-text-input";
 import { useKanjiPageContext } from "../kanji-page-layout/kanji-page-context";
-import { kanji_regex } from "@/constants/regex";
+import { regex_kanji } from "@/constants/regex";
 
 const INPUT_VALIDATION_RULES = {
   minLength: 1,
   maxLength: 1,
-  pattern: kanji_regex,
+  pattern: regex_kanji,
   required: true,
 };
 

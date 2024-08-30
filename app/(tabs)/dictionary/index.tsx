@@ -1,6 +1,6 @@
 import { DictionaryEntryRead } from "@/components/dictionary-entry-read";
 import { useSearchBar } from "@/hooks/use-search-bar";
-import { getDictionaryEntries } from "@/utils/kanji-async-storage";
+import { getDictionaryEntries } from "@/utils/dictionary-entry-async-storage";
 import { DictionaryEntry } from "@/utils/types";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";

@@ -22,7 +22,7 @@ const renderRightActions =
       <Animated.View
         style={[
           {
-            marginBottom: 10,
+            marginVertical: 16,
             marginLeft: 8,
             opacity,
           },
@@ -67,7 +67,11 @@ export function ControlledDictionaryInput({ name, onRemove, readOnly }: Props) {
     };
   return (
     <Swipeable renderRightActions={renderRightActions({ onRemove, readOnly })}>
-      <Card>
+      <Card
+        style={{
+          margin: 14,
+        }}
+      >
         <View
           style={{
             flexDirection: "row",
@@ -121,7 +125,6 @@ export function ControlledDictionaryInput({ name, onRemove, readOnly }: Props) {
               alignItems: "center",
             }}
           >
-            <Text style={{ color: "whitesmoke" }}>Kanjis mentioned:</Text>
             <KanjiLinksList entryName={name} />
           </View>
         )}
@@ -155,7 +158,7 @@ const styles = StyleSheet.create({
     color: "whitesmoke",
     paddingHorizontal: 12,
     borderRadius: 5,
-    fontSize: 32,
+    fontSize: 24,
 
     paddingVertical: 4,
   },
