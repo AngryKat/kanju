@@ -6,6 +6,7 @@ import {
   editDictionaryEntry,
   getDictionaryEntriesWithKanji,
   removeDictionaryEntriesWithKanji,
+  removeDictionaryEntryById,
 } from "./dictionary-entry-async-storage";
 import { getKanjiDecks } from "./kanjis-decks-data-utils";
 import { editDeck } from "./decks-async-storage";
@@ -30,6 +31,7 @@ export async function createKanjiWithFormData(data: FormData) {
 
 export async function editKanjiWithFormData(kanjiId: string, data: FormData) {
   const { on, kun, dictionary, decks, kanji, ...rest } = data;
+  const previousEntries = getDictionaryEntriesWithKanji(kanjiId); // .map(({ id }) => id);
   const readings = {
     on: on !== "" ? on.split(regex_readings_dividers) : [],
     kun: kun !== "" ? kun.split(regex_readings_dividers) : [],
@@ -46,11 +48,14 @@ export async function editKanjiWithFormData(kanjiId: string, data: FormData) {
       editDeck(deck.id, deck);
     })
   );
-  await Promise.all(
-    dictionary.map((entry) => {
-      editDictionaryEntry(entry.id, entry);
-    })
+  const diff = previousEntries.filter(
+    ({ id }) => !dictionary.map(({ id }) => id).includes(id)
   );
+
+  await Promise.all(dictionary.map((entry) => addDictionaryEntry(entry)));
+  if (diff.length > 0) {
+    await Promise.all(diff.map((entry) => removeDictionaryEntryById(entry.id)));
+  }
 }
 
 export function getKanjiFormData(kanji: Kanji): FormData {

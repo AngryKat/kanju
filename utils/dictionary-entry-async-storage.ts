@@ -31,30 +31,6 @@ export async function addDictionaryEntry(entry: DictionaryEntry) {
     "dictionaryEntries",
     JSON.stringify(dictionaryEntries)
   );
-  // function insertIntoDictionary(kanjis: string[], entry: DictionaryEntry) {
-  //   if (kanjis.length === 0) {
-  //     return;
-  //   }
-
-  //   const [currentKanji, ...remainingKanjiArray] = kanjis;
-
-  //   // Ensure current level exists in the dictionary
-  //   if (!dictionaryEntries[currentKanji]) {
-  //     dictionaryEntries[currentKanji] = {};
-  //   }
-
-  //   // If it's the last kanji in the array, set the word
-  //   if (remainingKanjiArray.length === 0) {
-  //     dictionaryEntries[currentKanji] = entry;
-  //   } else {
-  //     // Recursively insert into the next level
-  //     insertIntoDictionary(
-  //       remainingKanjiArray,
-  //       entry
-  //     );
-  //   }
-  // }
-  // insertIntoDictionary(kanjis, entry);
 }
 
 export async function editDictionaryEntry(
@@ -104,9 +80,10 @@ export async function removeDictionaryEntryById(id: string) {
 export async function transformDataForEntries() {
   if (Object.keys(dictionaryEntries).length === 0) return;
   const kanjis = getKanjis();
-  const allEntries = Object.values(kanjis).flatMap(
-    ({ dictionary }) => dictionary
-  );
+  const allEntries = Object.values(kanjis)
+    .flatMap((kanji) => kanji.dictionary)
+    .filter((d) => !!d);
+  if (allEntries.length === 0) return;
   dictionaryEntries = allEntries.reduce(
     (acc, curr) => ({
       ...acc,
