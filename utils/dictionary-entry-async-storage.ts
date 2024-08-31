@@ -82,7 +82,6 @@ export async function removeDictionaryEntriesWithKanji(kanji: string) {
     const kanjis = dictionaryEntries[key].word
       .match(regex_kanji_global)
       ?.filter((kanji: string) => getKanjiById(kanji));
-    console.log({ kanjis, word: dictionaryEntries[key].word });
     if (!kanjis) return;
     return kanjis.length === 0 || (kanjis.length === 1 && kanjis[0] === kanji);
   });
