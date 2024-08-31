@@ -21,6 +21,10 @@ export function getDictionaryEntries() {
   return Object.values(dictionaryEntries);
 }
 
+export function getDictionaryEntryById(id: string) {
+  return dictionaryEntries[id];
+}
+
 export async function addDictionaryEntry(entry: DictionaryEntry) {
   dictionaryEntries[entry.id] = { ...entry };
   await AsyncStorage.setItem(
@@ -68,6 +72,7 @@ export async function editDictionaryEntry(
 }
 
 export function getDictionaryEntriesWithKanji(kanji: string) {
+  if (kanji === "") return [];
   return Object.values(dictionaryEntries).filter((entry) =>
     entry.word.includes(kanji)
   );
@@ -82,6 +87,14 @@ export async function removeDictionaryEntriesWithKanji(kanji: string) {
     return kanjis.length === 0 || (kanjis.length === 1 && kanjis[0] === kanji);
   });
   keysToRemove.forEach((key) => delete dictionaryEntries[key]);
+  await AsyncStorage.setItem(
+    "dictionaryEntries",
+    JSON.stringify(dictionaryEntries)
+  );
+}
+
+export async function removeDictionaryEntryById(id: string) {
+  delete dictionaryEntries[id];
   await AsyncStorage.setItem(
     "dictionaryEntries",
     JSON.stringify(dictionaryEntries)

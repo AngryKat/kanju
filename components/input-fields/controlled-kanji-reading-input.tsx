@@ -1,6 +1,6 @@
 import { Text, TextInput, View } from "react-native";
 import { Card } from "../ui/card";
-import { Controller, useForm, useFormState, useWatch } from "react-hook-form";
+import { Controller, useFormState, useWatch } from "react-hook-form";
 import { useKanjiPageContext } from "../kanji-page-layout/kanji-page-context";
 import { regex_hiragana_katakana } from "@/constants/regex";
 

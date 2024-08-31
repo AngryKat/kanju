@@ -1,8 +1,7 @@
-import { AddKanjiScreen } from "@/screens/add-kanji";
+import { KanjiPageLayout } from "@/components/kanji-page-layout/kanji-page-layout";
 
 export default function AddKanjiPage() {
-  return (
-    <AddKanjiScreen />
-  );
+  return (<KanjiPageLayout mode="create" />)
+
 }
 

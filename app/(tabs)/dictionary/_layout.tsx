@@ -9,6 +9,12 @@ export default function Layout() {
           headerTitle: "Dictionary",
         }}
       />
+      <Stack.Screen
+        name="[entryId]"
+        options={{
+          headerTitle: "Edit entry",
+        }}
+      />
     </Stack>
   );
 }

@@ -35,6 +35,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="dictionary"
         options={{
+          href: null,
           headerShown: false,
           title: "Dictionary",
           tabBarIcon: ({ color }) => (

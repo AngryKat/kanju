@@ -4,6 +4,8 @@ import uuid from "react-native-uuid";
 import { ControlledDictionaryInput } from "./controlled-dictionary-input";
 import { Ionicons } from "@expo/vector-icons";
 import { useKanjiPageContext } from "../kanji-page-layout/kanji-page-context";
+import { getDictionaryEntriesWithKanji } from "@/utils/dictionary-entry-async-storage";
+import { DictionaryEntryRead } from "../dictionary-entry-read";
 
 export function DictionaryFieldArray() {
   const { fields, append, remove } = useFieldArray({
@@ -32,6 +34,24 @@ export function DictionaryFieldArray() {
         gap: 6,
       }}
     >
+      {mode === "create" &&
+        getDictionaryEntriesWithKanji(kanji).length !== 0 && (
+          <View>
+            <Text
+              style={{
+                color: "#c0c0c0",
+                fontSize: 16,
+                marginLeft: 16,
+                marginBottom: 8,
+              }}
+            >
+              Already in the dictionary
+            </Text>
+            {getDictionaryEntriesWithKanji(kanji).map((entry) => (
+              <DictionaryEntryRead key={entry.id} entry={entry} kanji={kanji} />
+            ))}
+          </View>
+        )}
       {fields.map((field, index) => {
         return (
           <ControlledDictionaryInput
@@ -50,7 +70,7 @@ export function DictionaryFieldArray() {
             alignItems: "center",
             gap: 8,
             marginHorizontal: 10,
-            marginTop: 10
+            marginTop: 10,
           }}
         >
           <Ionicons

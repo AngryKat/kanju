@@ -7,7 +7,6 @@ import {
 } from "./controlled-text-input";
 import { useWatch } from "react-hook-form";
 import { Swipeable } from "react-native-gesture-handler";
-import { KanjiLinksList } from "../kanji-links";
 
 const renderRightActions =
   ({ onRemove, readOnly }: { onRemove: () => void; readOnly?: boolean }) =>
@@ -118,16 +117,6 @@ export function ControlledDictionaryInput({ name, onRemove, readOnly }: Props) {
             />
           </View>
         </View>
-        {readOnly && (
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <KanjiLinksList entryName={name} />
-          </View>
-        )}
       </Card>
     </Swipeable>
   );

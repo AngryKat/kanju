@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { View, ScrollView, TextInput } from "react-native";
+import React from "react";
+import { View, TextInput } from "react-native";
 import { Card } from "./ui/card";
 import { DictionaryEntry } from "@/utils/types";
 
@@ -11,7 +11,7 @@ export const DictionaryEntryRead: React.FC<DictionaryReadProps> = ({
   entry,
 }) => {
   return (
-    <Card key={entry.id} style={{ marginBottom: 10 }}>
+    <Card key={entry.id} style={{ marginBottom: 10, marginHorizontal: 14 }}>
       <View style={{ flexDirection: "row" }}>
         <View style={{ marginRight: 8 }}>
           {entry.reading && (
@@ -26,25 +26,30 @@ export const DictionaryEntryRead: React.FC<DictionaryReadProps> = ({
               readOnly
             />
           )}
-          <TextInput
-            style={{
-              alignSelf: "center",
-              color: "whitesmoke",
-              paddingHorizontal: 12,
-              fontSize: 20,
-            }}
-            value={entry.word}
-            readOnly
-          />
+          <View>
+            <TextInput
+              style={{
+                textAlign: "center",
+                alignSelf: "center",
+                color: "whitesmoke",
+                fontSize: 20,
+              }}
+              value={entry.word}
+              readOnly
+            />
+          </View>
         </View>
+
         <View
-          style={{
-            borderLeftWidth: 1,
-            borderLeftColor: "#505050",
-            marginRight: 8,
-          }}
-        />
-        <View style={{ flex: 1 }}>
+          style={[
+            {
+              flex: 1,
+              marginRight: 8,
+              borderLeftWidth: 1,
+              borderLeftColor: "#505050",
+            },
+          ]}
+        >
           <TextInput
             style={{
               flex: 1,
