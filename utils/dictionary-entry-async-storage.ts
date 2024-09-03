@@ -75,24 +75,3 @@ export async function removeDictionaryEntryById(id: string) {
     JSON.stringify(dictionaryEntries)
   );
 }
-
-// TEMP.
-export async function transformDataForEntries() {
-  if (Object.keys(dictionaryEntries).length === 0) return;
-  const kanjis = getKanjis();
-  const allEntries = Object.values(kanjis)
-    .flatMap((kanji) => kanji.dictionary)
-    .filter((d) => !!d);
-  if (allEntries.length === 0) return;
-  dictionaryEntries = allEntries.reduce(
-    (acc, curr) => ({
-      ...acc,
-      [curr.word]: { ...curr },
-    }),
-    {}
-  );
-  await AsyncStorage.setItem(
-    "dictionaryEntries",
-    JSON.stringify(dictionaryEntries)
-  );
-}

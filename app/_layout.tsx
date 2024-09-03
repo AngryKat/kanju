@@ -12,21 +12,16 @@ import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { initKanjis } from "@/utils/kanji-async-storage";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { initSettings } from "@/utils/settings-async-storage";
 import { initDecks } from "@/utils/decks-async-storage";
 import {
   initDictionaryEntries,
-  transformDataForEntries,
 } from "@/utils/dictionary-entry-async-storage";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 const init = async () => {
   try {
     await Promise.all([initKanjis(), initDecks(), initDictionaryEntries()]);
-    await transformDataForEntries();
-    //  await AsyncStorage.clear()
   } catch (e) {
     console.error(e);
   }
